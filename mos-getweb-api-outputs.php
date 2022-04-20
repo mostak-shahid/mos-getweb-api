@@ -3,9 +3,9 @@ function mos_getweb_api_banners($data) {
 	$outout = [];
 	$i = 0;
 	$args = [
-		//'posts_per_page' => $count,
+		'posts_per_page' => $data->get_param('count'),
 		'post_type' => 'banner',
-        //'óffset' => $offset
+        'óffset' => $data->get_param('offset')
 	];
     $query = new WP_Query( $args );
     if ( $query->have_posts() ) :
@@ -21,7 +21,7 @@ function mos_getweb_api_banners($data) {
     endif;
     wp_reset_postdata();
 
-	return $data;
+	return $outout;
 }
 function mos_getweb_api_banners_by_category($category) {
 	$data = [];
@@ -115,7 +115,7 @@ function mos_getweb_api_products() {
 
 add_action('rest_api_init', function() {
     //https://developer.wordpress.org/reference/functions/register_rest_route/
-	register_rest_route('mos-getweb-api/v1', '/banners/offset=(?P<offset>[0-9]+)/count=(?P<count>[0-9]+)', [
+	register_rest_route('mos-getweb-api/v1', '/banners/(?P<offset>[0-9]+)/(?P<count>[0-9]+)', [
 		'methods' => 'GET',
 		'callback' => 'mos_getweb_api_banners',
 	]);
