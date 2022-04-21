@@ -3,9 +3,9 @@ function mos_getweb_api_banners($data) {
 	$outout = [];
 	$i = 0;
 	$args = [
-		'posts_per_page' => $data->get_param('count'),
+		'posts_per_page' => ($data->get_param('count'))?$data->get_param('count'):-1,
 		'post_type' => 'banner',
-        'óffset' => $data->get_param('offset')
+        'óffset' => ($data->get_param('offset'))?$data->get_param('offset'):0
 	];
     $query = new WP_Query( $args );
     if ( $query->have_posts() ) :
@@ -115,11 +115,13 @@ function mos_getweb_api_products() {
 
 add_action('rest_api_init', function() {
     //https://developer.wordpress.org/reference/functions/register_rest_route/
-	register_rest_route('mos-getweb-api/v1', '/banners/(?P<offset>[0-9]+)/(?P<count>[0-9]+)', [
+    //register_rest_route( 'api', '/animals(?:/(?P<id>\d+))?', [
+	//register_rest_route('mos-getweb-api/v1', '/banners/(?P<offset>[0-9]+)/(?P<count>[0-9]+)', [
+	register_rest_route('mos-getweb-api/v1', '/banners(?:/(?P<offset>[0-9]+)/(?P<count>[0-9]+))?', [
 		'methods' => 'GET',
 		'callback' => 'mos_getweb_api_banners',
 	]);
-	register_rest_route('mos-getweb-api/v1', 'banners/(?P<category>[a-zA-Z0-9-]+)', [
+	register_rest_route('mos-getweb-api/v1', 'banners-by-cateory/(?P<category>[a-zA-Z0-9-]+)', [
 		'methods' => 'GET',
 		'callback' => 'mos_getweb_api_banners_by_category',
 	]);
