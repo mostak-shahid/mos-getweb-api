@@ -44,8 +44,8 @@ function mos_getweb_api_add_page($page_slug, $page_title, $page_content, $page_t
         add_post_meta( $page_id, '_wp_page_template', $page_template );
     }
 }
-mos_getweb_api_add_page('mos-getweb-api', 'API Page', '', '');
-mos_getweb_api_add_page('mos-getweb-api-single', 'API Single Page', '', '');
+//mos_getweb_api_add_page('mos-getweb-api', 'API Page', '', '');
+//mos_getweb_api_add_page('mos-getweb-api-single', 'API Single Page', '', '');
 
 add_filter( 'page_template', 'mos_getweb_api_page_template' );
 function mos_getweb_api_page_template( $page_template ) {
