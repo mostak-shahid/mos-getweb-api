@@ -46,6 +46,23 @@ function mos_getweb_api_banners_by_category($category) {
 
 	return $data;
 }
+
+function mos_getweb_api_banner( $id ) {
+	$post   = get_post( $id['id'] );
+	$data['id'] = $post->ID;
+	$data['title'] = $post->post_title;
+	$data['content'] = apply_filters('the_content',$post->post_content);
+	$data['slug'] = $post->post_name;
+	$data['featured_image']['thumbnail'] = get_the_post_thumbnail_url($post->ID, 'thumbnail');
+	$data['featured_image']['medium'] = get_the_post_thumbnail_url($post->ID, 'medium');
+	$data['featured_image']['large'] = get_the_post_thumbnail_url($post->ID, 'large');
+	$data['featured_image']['full'] = get_the_post_thumbnail_url($post->ID, 'full');
+    $data['meta']['banner_sub_title'] = get_post_meta($post->ID,'_mosacademy_banner_sub_title', true);
+    $data['meta']['banner_button_title'] = get_post_meta($post->ID,'_mosacademy_banner_button_title', true);
+    $data['meta']['banner_button_url'] = get_post_meta($post->ID,'_mosacademy_banner_button_url', true);
+    $data['meta']['banner_gallery'] = get_post_meta($post->ID,'_mosacademy_banner_gallery', true);
+	return $data;
+}
 function mos_getweb_api_posts() {
 	$args = [
 		'numberposts' => 99999,
@@ -70,23 +87,15 @@ function mos_getweb_api_posts() {
 
 	return $data;
 }
-function mos_getweb_api_post( $slug ) {
-	$args = [
-		'name' => $slug['slug'],
-		'post_type' => 'post'
-	];
-
-	$post = get_posts($args);
-
-
-	$data['id'] = $post[0]->ID;
-	$data['title'] = $post[0]->post_title;
-	$data['content'] = $post[0]->post_content;
-	$data['slug'] = $post[0]->post_name;
-	$data['featured_image']['thumbnail'] = get_the_post_thumbnail_url($post[0]->ID, 'thumbnail');
-	$data['featured_image']['medium'] = get_the_post_thumbnail_url($post[0]->ID, 'medium');
-	$data['featured_image']['large'] = get_the_post_thumbnail_url($post[0]->ID, 'large');
-
+function mos_getweb_api_post( $id ) {
+	$post   = get_post( $id['id'] );
+	$data['id'] = $post->ID;
+	$data['title'] = $post->post_title;
+	$data['content'] = $post->post_content;
+	$data['slug'] = $post->post_name;
+	$data['featured_image']['thumbnail'] = get_the_post_thumbnail_url($post->ID, 'thumbnail');
+	$data['featured_image']['medium'] = get_the_post_thumbnail_url($post->ID, 'medium');
+	$data['featured_image']['large'] = get_the_post_thumbnail_url($post->ID, 'large');
 	return $data;
 }
 // Used in this video https://www.youtube.com/watch?v=76sJL9fd12Y
@@ -125,13 +134,18 @@ add_action('rest_api_init', function() {
 		'methods' => 'GET',
 		'callback' => 'mos_getweb_api_banners_by_category',
 	]);
+
+	register_rest_route( 'mos-getweb-api/v1', 'banner/(?P<id>[0-9]+)(?:/(?P<return>[a-zA-z0-9,]+))?', array(
+		'methods' => 'GET',
+		'callback' => 'mos_getweb_api_banner',
+    ) );
     
 	register_rest_route('mos-getweb-api/v1', 'posts', [
 		'methods' => 'GET',
 		'callback' => 'mos_getweb_api_posts',
 	]);
 
-	register_rest_route( 'mos-getweb-api/v1', 'posts/(?P<slug>[a-zA-Z0-9-]+)', array(
+	register_rest_route( 'mos-getweb-api/v1', 'post/(?P<id>[0-9]+)(?:/(?P<return>[a-zA-z0-9,]+))?', array(
 		'methods' => 'GET',
 		'callback' => 'mos_getweb_api_post',
     ) );

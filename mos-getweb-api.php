@@ -28,3 +28,74 @@ require_once ( plugin_dir_path( MOS_GETWEB_API_FILE ) . 'mos-getweb-api-outputs.
 //require_once('inc/metabox/custom-cmb2-fields.php'); 
 //require_once('inc/metabox/extensions/cmb-field-sorter/cmb-field-sorter.php');
 //require_once('inc/metabox/extensions/cmb2-conditionals/cmb2-conditionals.php');
+function mos_getweb_api_add_page($page_slug, $page_title, $page_content, $page_template) {
+    $page = get_page_by_path( $page_slug , OBJECT );
+    //var_dump($page);
+    if(!$page){
+        $page_details = array(
+            'post_title' => $page_title,
+            'post_name' => $page_slug,
+            'post_date' => gmdate("Y-m-d h:i:s"),
+            'post_content' => $page_content,
+            'post_status' => 'publish',
+            'post_type' => 'page',
+        );
+        $page_id = wp_insert_post( $page_details );
+        add_post_meta( $page_id, '_wp_page_template', $page_template );
+    }
+}
+mos_getweb_api_add_page('mos-getweb-api', 'API Page', '', '');
+mos_getweb_api_add_page('mos-getweb-api-single', 'API Single Page', '', '');
+
+add_filter( 'page_template', 'mos_getweb_api_page_template' );
+function mos_getweb_api_page_template( $page_template ) {
+	if ( is_page( 'mos-getweb-api' ) ) {
+		$page_template = dirname( __FILE__ ) . '/page-api.php';
+	}
+	else if ( is_page( 'mos-getweb-api-single' ) ) {
+		$page_template = dirname( __FILE__ ) . '/page-api_single.php';
+	}
+	return $page_template;
+}
+
+function get_post_id_by_slug($slug) {
+	$post = get_page_by_path($slug);
+	if ($post) {
+		return $post->ID;
+	} else {
+		return null;
+	}
+}
+// Allow SVG
+add_filter( 'wp_check_filetype_and_ext', function($data, $file, $filename, $mimes) {
+
+  global $wp_version;
+  if ( $wp_version !== '4.7.1' ) {
+     return $data;
+  }
+
+  $filetype = wp_check_filetype( $filename, $mimes );
+
+  return [
+      'ext'             => $filetype['ext'],
+      'type'            => $filetype['type'],
+      'proper_filename' => $data['proper_filename']
+  ];
+
+}, 10, 4 );
+
+function cc_mime_types( $mimes ){
+  $mimes['svg'] = 'image/svg+xml';
+  return $mimes;
+}
+add_filter( 'upload_mimes', 'cc_mime_types' );
+
+function fix_svg() {
+  echo '<style type="text/css">
+        .attachment-266x266, .thumbnail img {
+             width: 100% !important;
+             height: auto !important;
+        }
+        </style>';
+}
+add_action( 'admin_head', 'fix_svg' );

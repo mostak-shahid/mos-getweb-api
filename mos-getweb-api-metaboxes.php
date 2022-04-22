@@ -63,7 +63,7 @@ function mosacademy_metaboxes() {
             'remove_text' => 'Replacement', // default: "Remove"
         ),*/
     ));
-
+    
     $tab_group_details = new_cmb2_box(array(
         'id' => $prefix . 'tab_group_details',
         'title' => __('Multy Tab Details', 'cmb2'),
