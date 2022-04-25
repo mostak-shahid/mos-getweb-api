@@ -2,35 +2,29 @@
 function mosacademy_metaboxes() {
     $prefix = '_mosacademy_';
 
-    $page_settings = new_cmb2_box(array(
-        'id' => $prefix . 'page_settings',
-        'title' => __('Page Settings', 'cmb2'),
-        'object_types' => array('page', 'post'),
-    ));   
-
-    $page_settings->add_field( array(
-        'name' => 'Hide Page Title',
-        'desc' => 'Yes I like to hide page title for this page',
-        'id'   => $prefix . 'page_title',
-        'type' => 'checkbox',
-        //'default' => true,
-    ));
-    $page_settings->add_field(array(
-        'name' => 'Page Title Background Image',
-        'desc' => '',
-        'id'   => $prefix.'banner_image',        
-        'type' => 'file',
-        /*'attributes' => array(
-            'required'            => false, // Will be required only if visible.
-            'data-conditional-id' => $prefix . 'page_title',
-        ),*/
-    )); 
-
     $banner_settings = new_cmb2_box(array(
         'id' => $prefix . 'banner_settings',
         'title' => __('Banner Settings', 'cmb2'),
         'object_types' => array('banner'),
     )); 
+    $banner_settings->add_field( array(
+        'name' => 'Title',
+        'type'    => 'wysiwyg',
+        'id'   => $prefix.'banner_title',        
+        'options' => array(
+            'wpautop' => true, // use wpautop?
+            'media_buttons' => false, // show insert/upload button(s)
+            //'textarea_name' => $editor_id, // set the textarea name to something different, square brackets [] can be used here
+            'textarea_rows' => get_option('default_post_edit_rows', 3), // rows="..."
+            //'tabindex' => '',
+            //'editor_css' => '', // intended for extra styles for both visual and HTML editors buttons, needs to include the `<style>` tags, can use "scoped".
+            ///'editor_class' => '', // add extra class(es) to the editor textarea
+            //'teeny' => false, // output the minimal editor config used in Press This
+            //'dfw' => false, // replace the default fullscreen with DFW (needs specific css)
+            'tinymce' => true, // load TinyMCE, can be used to pass settings directly to TinyMCE using an array()
+            'quicktags' => false // load Quicktags, can be used to pass settings directly to Quicktags using an array()
+        ),
+    ));
     $banner_settings->add_field( array(
         'name' => 'Sub Title',
         'type' => 'text',
@@ -64,41 +58,89 @@ function mosacademy_metaboxes() {
         ),*/
     ));
     
-    $tab_group_details = new_cmb2_box(array(
-        'id' => $prefix . 'tab_group_details',
-        'title' => __('Multy Tab Details', 'cmb2'),
+    $page_group_details = new_cmb2_box(array(
+        'id' => $prefix . 'page_group_details',
+        'title' => __('Page Details', 'cmb2'),
         'object_types' => array('page'),
         //'show_on'      => array( 'key' => 'page-template', 'value' => 'page-template/lightbox-multy-gallery-page.php' ),        
         'context'      => 'normal',
         'priority'     => 'high',
         'show_names'   => true
     )); 
-    $tab_group_details->add_field(array(
+    /*$page_group_details->add_field(array(
         'name' => __('Tab Location', 'cmb2'),  
-        'id' => $prefix . 'tab_group_location', 
+        'id' => $prefix . 'page_group_location', 
         'type'             => 'select',
         'default'          => 'before',
         'options'          => array(
             'before' => __( 'Before Content', 'cmb2' ),
             'after'   => __( 'After Content', 'cmb2' ),
         ),
-    ));
+    ));*/
 
-    $tab_group_details_id = $tab_group_details->add_field( array(
-        'id'   => $prefix . 'tab_group_details_group',
+    $page_group_details_id = $page_group_details->add_field( array(
+        'id'   => $prefix . 'page_group_details_group',
         'type' => 'group',
+        // 'repeatable'  => false, // use false if you want non-repeatable group
+        'options'     => array(
+            'group_title'       => __( 'Section {#}', 'cmb2' ), // since version 1.1.4, {#} gets replaced by row number
+            'add_button'        => __( 'Add Another Section', 'cmb2' ),
+            'remove_button'     => __( 'Remove Section', 'cmb2' ),
+            'sortable'          => true,
+            // 'closed'         => true, // true to have the groups closed by default
+            // 'remove_confirm' => esc_html__( 'Are you sure you want to remove?', 'cmb2' ), // Performs confirmation before removing group.
+        ),
     )); 
 
-    $tab_group_details->add_group_field( $tab_group_details_id, array(
-        'name' => 'Tab Title',
-        'id'   => $prefix . 'tab_group_title_text',
-        'type' => 'text',
-    ));   
+    $page_group_details->add_group_field( $page_group_details_id, array(
+        'name' => 'Section Title',
+        'id'   => $prefix . 'page_group_title_text',
+        'type'    => 'wysiwyg', 
+        'options' => array(
+            'wpautop' => true, // use wpautop?
+            'media_buttons' => false, // show insert/upload button(s)
+            //'textarea_name' => $editor_id, // set the textarea name to something different, square brackets [] can be used here
+            'textarea_rows' => get_option('default_post_edit_rows', 3), // rows="..."
+            //'tabindex' => '',
+            //'editor_css' => '', // intended for extra styles for both visual and HTML editors buttons, needs to include the `<style>` tags, can use "scoped".
+            ///'editor_class' => '', // add extra class(es) to the editor textarea
+            //'teeny' => false, // output the minimal editor config used in Press This
+            //'dfw' => false, // replace the default fullscreen with DFW (needs specific css)
+            'tinymce' => true, // load TinyMCE, can be used to pass settings directly to TinyMCE using an array()
+            'quicktags' => true // load Quicktags, can be used to pass settings directly to Quicktags using an array()
+        ),
+    ));
+    
+    $page_group_details->add_group_field( $page_group_details_id, array(
+        'name'    => 'Section Sub titles',
+        'id'      => $prefix . 'page_group_sub_titles',
+        'type'    => 'text',
+        'repeatable' => true,
+    ));
 
-    $tab_group_details->add_group_field( $tab_group_details_id, array(
-        'name'    => 'Tab Title Image',
+    $page_group_details->add_group_field( $page_group_details_id, array(
+        'name' => 'Section Description',
+        'id'   => $prefix . 'page_group_title_description',
+        'type'    => 'wysiwyg', 
+        'options' => array(
+            'wpautop' => true, // use wpautop?
+            'media_buttons' => false, // show insert/upload button(s)
+            //'textarea_name' => $editor_id, // set the textarea name to something different, square brackets [] can be used here
+            'textarea_rows' => get_option('default_post_edit_rows', 6), // rows="..."
+            //'tabindex' => '',
+            //'editor_css' => '', // intended for extra styles for both visual and HTML editors buttons, needs to include the `<style>` tags, can use "scoped".
+            ///'editor_class' => '', // add extra class(es) to the editor textarea
+            //'teeny' => false, // output the minimal editor config used in Press This
+            //'dfw' => false, // replace the default fullscreen with DFW (needs specific css)
+            'tinymce' => true, // load TinyMCE, can be used to pass settings directly to TinyMCE using an array()
+            'quicktags' => true // load Quicktags, can be used to pass settings directly to Quicktags using an array()
+        ),
+    )); 
+
+    $page_group_details->add_group_field( $page_group_details_id, array(
+        'name'    => 'Section Background Image',
         'desc'    => 'Upload an image or enter an URL.',
-        'id'      => $prefix . 'tab_group_title_images',
+        'id'      => $prefix . 'page_group_background_images',
         'type'    => 'file',
         // Optional:
         'options' => array(
@@ -118,14 +160,18 @@ function mosacademy_metaboxes() {
             ),
         ),
         'preview_size' => 'large', // Image size to use when previewing in the admin.
-    ));    
-    $tab_group_details->add_group_field( $tab_group_details_id, array(
-        'name'    => 'Tab Details',
-        'desc'    => 'Tab Name, Tab Desccription, Tab Content',
-        'id'      => $prefix . 'tab_group_tab_details',
-        'type'    => 'text',
-        'repeatable' => true,
-    ));  
+    )); 
+    
+    $page_group_details->add_group_field( $page_group_details_id, array(
+        'name' => 'Section Button Text',
+        'type' => 'text',
+        'id'   => $prefix.'page_group_button_title',
+    ));
+    $page_group_details->add_group_field( $page_group_details_id, array(
+        'name' => 'Section Button URL',
+        'type' => 'text_url',
+        'id'   => $prefix.'page_group_button_url',
+    ));
 
 }
 add_action('cmb2_admin_init', 'mosacademy_metaboxes');

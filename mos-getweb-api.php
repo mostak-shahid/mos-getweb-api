@@ -66,6 +66,22 @@ function get_post_id_by_slug($slug) {
 		return null;
 	}
 }
+
+
+
+function mos_get_terms ($taxonomy = 'category') {
+    global $wpdb;
+    $output = array();
+    $all_taxonomies = $wpdb->get_results( "SELECT {$wpdb->prefix}term_taxonomy.term_id, {$wpdb->prefix}term_taxonomy.taxonomy, {$wpdb->prefix}terms.name, {$wpdb->prefix}terms.slug, {$wpdb->prefix}term_taxonomy.description, {$wpdb->prefix}term_taxonomy.parent, {$wpdb->prefix}term_taxonomy.count, {$wpdb->prefix}terms.term_group FROM {$wpdb->prefix}term_taxonomy INNER JOIN {$wpdb->prefix}terms ON {$wpdb->prefix}term_taxonomy.term_id={$wpdb->prefix}terms.term_id", ARRAY_A);
+
+    foreach ($all_taxonomies as $key => $value) {
+        if ($value["taxonomy"] == $taxonomy) {
+            $output[] = $value;
+        }
+    }
+    return $output;
+}
+
 // Allow SVG
 add_filter( 'wp_check_filetype_and_ext', function($data, $file, $filename, $mimes) {
 
