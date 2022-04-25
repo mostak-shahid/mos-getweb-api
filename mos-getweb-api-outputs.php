@@ -1,4 +1,82 @@
 <?php
+function mos_getweb_api_data_list($data) {
+    global $wpdb;
+	$output = [];
+    $columns = $wpdb->get_col( $wpdb->prepare("SELECT DISTINCT meta_key FROM wp_postmeta"));
+	$i = 0;
+	$args = [
+		'post_type' => $data->get_param('type'),
+        'offset' => ($data->get_param('offset'))?$data->get_param('offset'):0,
+		'posts_per_page' => ($data->get_param('offset'))?
+        (($data->get_param('count'))? $data->get_param('count'):10):
+        (($data->get_param('count'))? $data->get_param('count'):-1)
+	];
+    if ($data->get_param('taxonomy')) {        
+        $catSlice = explode('-',$data->get_param('taxonomy'));
+        
+        if ($catSlice && sizeof($catSlice)) {        
+            $args['tax_query']['relation'] = 'OR';
+            foreach($catSlice as $catID){
+                $args['tax_query'][$catID] = array(
+                    'taxonomy' => $data->get_param('type') . '_category',
+                    'field' => 'term_id',
+                    'terms' => $catID
+                );
+            }
+        }
+    }
+    $query = new WP_Query( $args );
+    if ( $query->have_posts() ) :
+        while ( $query->have_posts() ) : $query->the_post();
+            $output[$i]['id'] = get_the_ID();
+            $output[$i]['title'] = get_the_title();
+            $output[$i]['content'] = get_the_content();
+            $output[$i]['excerpt'] = get_the_excerpt();
+                
+            $output[$i]['featured_image']['thumbnail'] = get_the_post_thumbnail_url(get_the_ID(), 'thumbnail');
+            $output[$i]['featured_image']['medium'] = get_the_post_thumbnail_url(get_the_ID(), 'medium');
+            $output[$i]['featured_image']['large'] = get_the_post_thumbnail_url(get_the_ID(), 'large');
+            $output[$i]['featured_image']['full'] = get_the_post_thumbnail_url(get_the_ID(), 'full'); 
+    
+            foreach ($columns as $col) {
+                $output[$i]['meta'][$col] = get_post_meta(get_the_ID(),$col, true);
+            }
+    
+            $i++;
+        endwhile;
+    else : 
+        $output = ['No data found'];
+    endif;
+    wp_reset_postdata();
+	return $output;
+}
+function mos_getweb_api_data_single( $id ) {
+    global $wpdb;
+	$output = [];
+    $columns = $wpdb->get_col( $wpdb->prepare("SELECT DISTINCT meta_key FROM wp_postmeta WHERE post_id=" . $id['id']));
+    
+    $post   = get_post( $id['id'] );
+    $output['id'] = $post->ID;
+    $output['title'] = $post->post_title;
+    $output['content'] = apply_filters('the_content',$post->post_content);
+    $output['excerpt'] = get_the_excerpt();
+    $output['slug'] = $post->post_name;
+    $output['featured_image']['thumbnail'] = get_the_post_thumbnail_url($post->ID, 'thumbnail');
+    $output['featured_image']['medium'] = get_the_post_thumbnail_url($post->ID, 'medium');
+    $output['featured_image']['large'] = get_the_post_thumbnail_url($post->ID, 'large');
+    $output['featured_image']['full'] = get_the_post_thumbnail_url($post->ID, 'full');
+    
+    foreach ($columns as $col) {
+        $output['meta'][$col] = get_post_meta(get_the_ID(),$col, true);
+    }
+    
+    return $output;
+}
+function mos_getweb_api_data_categories ($data){
+    //return $data->get_param('taxonomy');
+    return mos_get_terms($data->get_param('taxonomy'));
+}
+/************************************************************************************************/
 function mos_getweb_api_banners($data) {
 	$output = [];
 	$i = 0;
@@ -293,6 +371,24 @@ function mos_getweb_api_products() {
 
 add_action('rest_api_init', function() {
     //https://developer.wordpress.org/reference/functions/register_rest_route/
+    
+	register_rest_route('mos-getweb-api/v1', '/data-list/(?P<type>[a-zA-z0-9_]+)/(?P<taxonomy>[0-9-]+)(?:/(?P<offset>[0-9]+)(?:/(?P<count>[0-9]+))?)?', [
+		'methods' => 'GET',
+		'callback' => 'mos_getweb_api_data_list',
+	]);
+
+	register_rest_route( 'mos-getweb-api/v1', 'data-single/(?P<id>[0-9]+)', [
+		'methods' => 'GET',
+		'callback' => 'mos_getweb_api_data_single',
+    ]);
+    
+	register_rest_route('mos-getweb-api/v1', 'data-taxonomies/(?P<taxonomy>[a-zA-z0-9_-]+)', [
+		'methods' => 'GET',
+		'callback' => 'mos_getweb_api_data_categories',
+	]);
+    
+    /****************************************************************/
+    
 	register_rest_route('mos-getweb-api/v1', '/banners(?:/(?P<offset>[0-9]+)(?:/(?P<count>[0-9]+))?)?', [
 		'methods' => 'GET',
 		'callback' => 'mos_getweb_api_banners',
@@ -309,7 +405,7 @@ add_action('rest_api_init', function() {
 	register_rest_route( 'mos-getweb-api/v1', 'banner/(?P<id>[0-9]+)', array(
 		'methods' => 'GET',
 		'callback' => 'mos_getweb_api_banner',
-    ) );
+    ));
     
     /****************************************************************/
     
