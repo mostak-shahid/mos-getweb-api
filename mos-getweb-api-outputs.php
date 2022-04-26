@@ -2,7 +2,7 @@
 function mos_getweb_api_data_list($data) {
     global $wpdb;
 	$output = [];
-    $columns = $wpdb->get_col( $wpdb->prepare("SELECT DISTINCT meta_key FROM wp_postmeta"));
+    $columns = $wpdb->get_col( $wpdb->prepare("SELECT DISTINCT meta_key FROM {$wpdb->prefix}postmeta"));
 	$i = 0;
 	$args = [
 		'post_type' => $data->get_param('type'),
@@ -44,8 +44,11 @@ function mos_getweb_api_data_list($data) {
     
             $i++;
         endwhile;
+        
+        //$output['columns'] = $columns;
+        $output['status'] = 'Success';
     else : 
-        $output = ['No data found'];
+        $output['status'] = 'Error';
     endif;
     wp_reset_postdata();
 	return $output;
