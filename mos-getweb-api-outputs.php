@@ -32,11 +32,19 @@ function mos_getweb_api_data_list($data) {
             $output[$i]['title'] = get_the_title();
             $output[$i]['content'] = get_the_content();
             $output[$i]['excerpt'] = get_the_excerpt();
+            $output[$i]['slug'] = get_post_field( 'post_name', get_the_ID() );
+            $output[$i]['date'] = get_the_date('Y-m-d H:m:i');
+            $output[$i]['modified_date'] = get_the_modified_date('Y-m-d H:m:i');
+    
+            $output[$i]['author']['id'] = get_the_author_ID();
+            $output[$i]['author']['name'] = get_the_author_meta('display_name',get_the_author_ID());
+            $output[$i]['author']['slug'] = get_the_author_meta('user_login',get_the_author_ID());
                 
             $output[$i]['featured_image']['thumbnail'] = get_the_post_thumbnail_url(get_the_ID(), 'thumbnail');
             $output[$i]['featured_image']['medium'] = get_the_post_thumbnail_url(get_the_ID(), 'medium');
             $output[$i]['featured_image']['large'] = get_the_post_thumbnail_url(get_the_ID(), 'large');
             $output[$i]['featured_image']['full'] = get_the_post_thumbnail_url(get_the_ID(), 'full'); 
+            $output[$i]['image'] = get_the_post_thumbnail_url(get_the_ID(), 'full'); 
     
             foreach ($columns as $col) {
                 $output[$i]['meta'][$col] = get_post_meta(get_the_ID(),$col, true);
@@ -44,9 +52,6 @@ function mos_getweb_api_data_list($data) {
     
             $i++;
         endwhile;
-        
-        //$output['columns'] = $columns;
-        $output['status'] = 'Success';
     else : 
         $output['status'] = 'Error';
     endif;
@@ -56,21 +61,29 @@ function mos_getweb_api_data_list($data) {
 function mos_getweb_api_data_single( $id ) {
     global $wpdb;
 	$output = [];
-    $columns = $wpdb->get_col( $wpdb->prepare("SELECT DISTINCT meta_key FROM wp_postmeta WHERE post_id=" . $id['id']));
+    $columns = $wpdb->get_col( $wpdb->prepare("SELECT DISTINCT meta_key FROM {$wpdb->prefix}postmeta WHERE post_id=" . $id['id']));
     
     $post   = get_post( $id['id'] );
-    $output['id'] = $post->ID;
+    $output['id'] = $id['id'];
     $output['title'] = $post->post_title;
     $output['content'] = apply_filters('the_content',$post->post_content);
-    $output['excerpt'] = get_the_excerpt();
-    $output['slug'] = $post->post_name;
-    $output['featured_image']['thumbnail'] = get_the_post_thumbnail_url($post->ID, 'thumbnail');
-    $output['featured_image']['medium'] = get_the_post_thumbnail_url($post->ID, 'medium');
-    $output['featured_image']['large'] = get_the_post_thumbnail_url($post->ID, 'large');
-    $output['featured_image']['full'] = get_the_post_thumbnail_url($post->ID, 'full');
+    $output['excerpt'] = $post->post_excerpt;
+    $output['slug'] = $post->post_name;    
+    $output['date'] = get_the_date('Y-m-d H:m:i', $id['id']);
+    $output['modified_date'] = get_the_modified_date('Y-m-d H:m:i', $id['id']);
+    
+    $output['author']['id'] = $post->post_author;
+    $output['author']['name'] = get_the_author_meta('display_name',$post->post_author);
+    $output['author']['slug'] = get_the_author_meta('user_login',$post->post_author);
+    
+    $output['featured_image']['thumbnail'] = get_the_post_thumbnail_url($id['id'], 'thumbnail');
+    $output['featured_image']['medium'] = get_the_post_thumbnail_url($id['id'], 'medium');
+    $output['featured_image']['large'] = get_the_post_thumbnail_url($id['id'], 'large');
+    $output['featured_image']['full'] = get_the_post_thumbnail_url($id['id'], 'full');
+    $output['image'] = get_the_post_thumbnail_url($id['id'], 'full');
     
     foreach ($columns as $col) {
-        $output['meta'][$col] = get_post_meta(get_the_ID(),$col, true);
+        $output['meta'][$col] = get_post_meta($id['id'],$col, true);
     }
     
     return $output;
@@ -392,7 +405,7 @@ add_action('rest_api_init', function() {
     
     /****************************************************************/
     
-	register_rest_route('mos-getweb-api/v1', '/banners(?:/(?P<offset>[0-9]+)(?:/(?P<count>[0-9]+))?)?', [
+	/*register_rest_route('mos-getweb-api/v1', '/banners(?:/(?P<offset>[0-9]+)(?:/(?P<count>[0-9]+))?)?', [
 		'methods' => 'GET',
 		'callback' => 'mos_getweb_api_banners',
 	]);
@@ -408,11 +421,11 @@ add_action('rest_api_init', function() {
 	register_rest_route( 'mos-getweb-api/v1', 'banner/(?P<id>[0-9]+)', array(
 		'methods' => 'GET',
 		'callback' => 'mos_getweb_api_banner',
-    ));
+    ));*/
     
     /****************************************************************/
     
-	register_rest_route('mos-getweb-api/v1', '/services(?:/(?P<offset>[0-9]+)(?:/(?P<count>[0-9]+))?)?', [
+	/*register_rest_route('mos-getweb-api/v1', '/services(?:/(?P<offset>[0-9]+)(?:/(?P<count>[0-9]+))?)?', [
 		'methods' => 'GET',
 		'callback' => 'mos_getweb_api_services',
 	]);
@@ -428,7 +441,7 @@ add_action('rest_api_init', function() {
 	register_rest_route( 'mos-getweb-api/v1', 'service/(?P<id>[0-9]+)', array(
 		'methods' => 'GET',
 		'callback' => 'mos_getweb_api_service',
-    ) );
+    ) );*/
     
     /****************************************************************/
     

@@ -163,6 +163,12 @@ function mosacademy_metaboxes() {
     )); 
     
     $page_group_details->add_group_field( $page_group_details_id, array(
+        'name' => 'Section Component Name',
+        'type' => 'text',
+        'id'   => $prefix.'page_group_component_name',
+    ));
+    
+    $page_group_details->add_group_field( $page_group_details_id, array(
         'name' => 'Section Button Text',
         'type' => 'text',
         'id'   => $prefix.'page_group_button_title',
