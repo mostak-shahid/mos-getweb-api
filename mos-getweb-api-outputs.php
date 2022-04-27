@@ -14,11 +14,13 @@ function mos_getweb_api_data_list($data) {
     if ($data->get_param('taxonomy')) {        
         $catSlice = explode('-',$data->get_param('taxonomy'));
         
-        if ($catSlice && sizeof($catSlice)) {        
+        if ($catSlice && sizeof($catSlice)) {              
+            
             $args['tax_query']['relation'] = 'OR';
-            foreach($catSlice as $catID){
+            foreach($catSlice as $catID){                
+                $taxonomy = $wpdb->get_var( "SELECT taxonomy FROM {$wpdb->prefix}term_taxonomy WHERE term_id={$catID}" );
                 $args['tax_query'][$catID] = array(
-                    'taxonomy' => $data->get_param('type') . '_category',
+                    'taxonomy' => $taxonomy,
                     'field' => 'term_id',
                     'terms' => $catID
                 );

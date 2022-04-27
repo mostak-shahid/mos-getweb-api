@@ -25,6 +25,7 @@ if ( ! defined( 'MOS_GETWEB_API_FILE' ) ) {
 require_once ( plugin_dir_path( MOS_GETWEB_API_FILE ) . 'inc/cmb2/init.php' );
 require_once ( plugin_dir_path( MOS_GETWEB_API_FILE ) . 'mos-getweb-api-metaboxes.php' );
 require_once ( plugin_dir_path( MOS_GETWEB_API_FILE ) . 'mos-getweb-api-outputs.php' );
+require_once ( plugin_dir_path( MOS_GETWEB_API_FILE ) . 'mos-getweb-api-hooks.php' );
 //require_once('inc/metabox/custom-cmb2-fields.php'); 
 //require_once('inc/metabox/extensions/cmb-field-sorter/cmb-field-sorter.php');
 //require_once('inc/metabox/extensions/cmb2-conditionals/cmb2-conditionals.php');
