@@ -46,6 +46,7 @@ function mos_getweb_api_data_list($data) {
             $output[$i]['featured_image']['medium'] = get_the_post_thumbnail_url(get_the_ID(), 'medium');
             $output[$i]['featured_image']['large'] = get_the_post_thumbnail_url(get_the_ID(), 'large');
             $output[$i]['featured_image']['full'] = get_the_post_thumbnail_url(get_the_ID(), 'full'); 
+            $output[$i]['featured_image']['id'] = get_post_thumbnail_id(get_the_ID());     
             $output[$i]['image'] = get_the_post_thumbnail_url(get_the_ID(), 'full'); 
     
             foreach ($columns as $col) {
@@ -82,6 +83,7 @@ function mos_getweb_api_data_single( $id ) {
     $output['featured_image']['medium'] = get_the_post_thumbnail_url($id['id'], 'medium');
     $output['featured_image']['large'] = get_the_post_thumbnail_url($id['id'], 'large');
     $output['featured_image']['full'] = get_the_post_thumbnail_url($id['id'], 'full');
+    $output['featured_image']['id'] = get_post_thumbnail_id($id['id']); 
     $output['image'] = get_the_post_thumbnail_url($id['id'], 'full');
     
     foreach ($columns as $col) {

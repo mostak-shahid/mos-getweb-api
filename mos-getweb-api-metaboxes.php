@@ -57,6 +57,56 @@ function mosacademy_metaboxes() {
             'remove_text' => 'Replacement', // default: "Remove"
         ),*/
     ));
+
+    $project_settings = new_cmb2_box(array(
+        'id' => $prefix . 'project_settings',
+        'title' => __('Project Settings', 'cmb2'),
+        'object_types' => array('project'),
+    ));
+    $project_settings->add_field( array(
+        'name' => 'Project URL',
+        'type' => 'text_url',
+        'id'   => $prefix.'project_url',
+    ));
+
+    $testimonial_settings = new_cmb2_box(array(
+        'id' => $prefix . 'testimonial_settings',
+        'title' => __('Testimonial Settings', 'cmb2'),
+        'object_types' => array('testimonial'),
+    ));
+    $testimonial_settings->add_field( array(
+        'name' => 'Company Logo',
+        'id'   => $prefix.'testimonial_company_logo',
+        'type'    => 'file',
+        // Optional:
+        'options' => array(
+            'url' => false, // Hide the text input for the url
+        ),
+        'text'    => array(
+            'add_upload_file_text' => 'Add File' // Change upload button text. Default: "Add or Upload File"
+        ),
+        // query_args are passed to wp.media's library query.
+        'query_args' => array(
+            //'type' => 'application/pdf', // Make library only display PDFs.
+            // Or only allow gif, jpg, or png images
+            'type' => array(
+             'image/gif',
+             'image/jpeg',
+             'image/png',
+            ),
+        ),
+        'preview_size' => 'large', // Image size to use when previewing in the admin.
+    ));
+    $testimonial_settings->add_field( array(
+        'name' => 'Name',
+        'type' => 'text',
+        'id'   => $prefix.'testimonial_name',
+    ));
+    $testimonial_settings->add_field( array(
+        'name' => 'Designation',
+        'type' => 'text',
+        'id'   => $prefix.'testimonial_designation',
+    ));
     
     $page_group_details = new_cmb2_box(array(
         'id' => $prefix . 'page_group_details',
