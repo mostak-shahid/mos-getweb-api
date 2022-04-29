@@ -61,40 +61,74 @@ function mos_getweb_api_data_list($data) {
     wp_reset_postdata();
 	return $output;
 }
-function mos_getweb_api_data_single( $id ) {
+function mos_getweb_api_data_single( $id ) {    
     global $wpdb;
+    //$post_id = $id['id'];
+    
+    $post_id = (!is_numeric($id['id']))?$wpdb->get_var("SELECT ID FROM {$wpdb->prefix}posts WHERE post_name='{$id['id']}'"):$id['id'];
 	$output = [];
-    $columns = $wpdb->get_col( $wpdb->prepare("SELECT DISTINCT meta_key FROM {$wpdb->prefix}postmeta WHERE post_id=" . $id['id']));
+    $columns = $wpdb->get_col( $wpdb->prepare("SELECT DISTINCT meta_key FROM {$wpdb->prefix}postmeta WHERE post_id=" . $post_id));
     
-    $post   = get_post( $id['id'] );
-    $output['id'] = $id['id'];
-    $output['title'] = $post->post_title;
-    $output['content'] = apply_filters('the_content',$post->post_content);
-    $output['excerpt'] = $post->post_excerpt;
-    $output['slug'] = $post->post_name;    
-    $output['date'] = get_the_date('Y-m-d H:m:i', $id['id']);
-    $output['modified_date'] = get_the_modified_date('Y-m-d H:m:i', $id['id']);
+    //$id = SELECT ID FROM api_getweb_wp_posts WHERE post_name='hello-world'
     
-    $output['author']['id'] = $post->post_author;
-    $output['author']['name'] = get_the_author_meta('display_name',$post->post_author);
-    $output['author']['slug'] = get_the_author_meta('user_login',$post->post_author);
-    
-    $output['featured_image']['thumbnail'] = get_the_post_thumbnail_url($id['id'], 'thumbnail');
-    $output['featured_image']['medium'] = get_the_post_thumbnail_url($id['id'], 'medium');
-    $output['featured_image']['large'] = get_the_post_thumbnail_url($id['id'], 'large');
-    $output['featured_image']['full'] = get_the_post_thumbnail_url($id['id'], 'full');
-    $output['featured_image']['id'] = get_post_thumbnail_id($id['id']); 
-    $output['image'] = get_the_post_thumbnail_url($id['id'], 'full');
-    
-    foreach ($columns as $col) {
-        $output['meta'][$col] = get_post_meta($id['id'],$col, true);
+    $post   = get_post( $post_id );
+    if ($post){
+        $output['id'] = $post_id;
+        $output['title'] = $post->post_title;
+        $output['content'] = apply_filters('the_content',$post->post_content);
+        $output['excerpt'] = $post->post_excerpt;
+        $output['slug'] = $post->post_name;    
+        $output['date'] = get_the_date('Y-m-d H:m:i', $post_id);
+        $output['modified_date'] = get_the_modified_date('Y-m-d H:m:i', $post_id);
+
+        $output['author']['id'] = $post->post_author;
+        $output['author']['name'] = get_the_author_meta('display_name',$post->post_author);
+        $output['author']['slug'] = get_the_author_meta('user_login',$post->post_author);
+
+        $output['featured_image']['thumbnail'] = get_the_post_thumbnail_url($post_id, 'thumbnail');
+        $output['featured_image']['medium'] = get_the_post_thumbnail_url($post_id, 'medium');
+        $output['featured_image']['large'] = get_the_post_thumbnail_url($post_id, 'large');
+        $output['featured_image']['full'] = get_the_post_thumbnail_url($post_id, 'full');
+        $output['featured_image']['id'] = get_post_thumbnail_id($post_id); 
+        $output['image'] = get_the_post_thumbnail_url($post_id, 'full');
+
+        foreach ($columns as $col) {
+            $output['meta'][$col] = get_post_meta($post_id,$col, true);
+        }
+    } else {        
+        $output['status'] = 'Error';
     }
-    
     return $output;
 }
 function mos_getweb_api_data_categories ($data){
     //return $data->get_param('taxonomy');
     return mos_get_terms($data->get_param('taxonomy'));
+}
+function mos_getweb_api_options (){
+    global $mosacademy_options;
+    if ($mosacademy_options["sections-footer-gallery"]) {
+        $slice = explode(',',$mosacademy_options["sections-footer-gallery"]);
+        $mosacademy_options["sections-footer-gallery"] = [];
+        foreach($slice as $attachment_id){
+            $mosacademy_options["sections-footer-gallery"][$attachment_id] = wp_get_attachment_url( $attachment_id );
+        }
+    }
+    $mosacademy_options['site_title'] = get_bloginfo('name');
+    $mosacademy_options['site_description'] = get_bloginfo('description');
+    return $mosacademy_options;
+}
+function mos_getweb_api_menus (){
+    global $wpdb;
+    $output = [];
+    $term_taxonomies = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}term_taxonomy WHERE taxonomy = 'nav_menu'", ARRAY_A );
+    foreach($term_taxonomies as $row){
+        $terms = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}terms WHERE term_id={$row['term_id']}", ARRAY_A ); 
+        foreach($terms as $term) {            
+            //$output[$term['term_id']]['name'] = $term['name'];    
+            $output[$term['term_id']] = wp_get_nav_menu_items($term['name']);
+        }
+    }
+    return $output;
 }
 /************************************************************************************************/
 function mos_getweb_api_banners($data) {
@@ -397,7 +431,7 @@ add_action('rest_api_init', function() {
 		'callback' => 'mos_getweb_api_data_list',
 	]);
 
-	register_rest_route( 'mos-getweb-api/v1', 'data-single/(?P<id>[0-9]+)', [
+	register_rest_route( 'mos-getweb-api/v1', 'data-single/(?P<id>[a-zA-Z0-9_-]+)', [
 		'methods' => 'GET',
 		'callback' => 'mos_getweb_api_data_single',
     ]);
@@ -450,6 +484,15 @@ add_action('rest_api_init', function() {
     /****************************************************************/
     
     
+    
+	register_rest_route('mos-getweb-api/v1', 'options', [
+		'methods' => 'GET',
+		'callback' => 'mos_getweb_api_options',
+	]);     
+	register_rest_route('mos-getweb-api/v1', 'menus', [
+		'methods' => 'GET',
+		'callback' => 'mos_getweb_api_menus',
+	]);    
     
 	register_rest_route('mos-getweb-api/v1', 'page-list', [
 		'methods' => 'GET',

@@ -24,6 +24,13 @@ if ( ! defined( 'MOS_GETWEB_API_FILE' ) ) {
 }
 require_once ( plugin_dir_path( MOS_GETWEB_API_FILE ) . 'inc/cmb2/init.php' );
 require_once ( plugin_dir_path( MOS_GETWEB_API_FILE ) . 'mos-getweb-api-metaboxes.php' );
+
+require_once ( plugin_dir_path( MOS_GETWEB_API_FILE ) . 'inc/theme-options/ReduxCore/framework.php'); 
+require_once ( plugin_dir_path( MOS_GETWEB_API_FILE ) . 'inc/theme-options/loader.php');
+// require_once ( plugin_dir_path( MOS_GETWEB_API_FILE ) . 'inc/theme-options/sample/sample-config.php');
+require_once ( plugin_dir_path( MOS_GETWEB_API_FILE ) . 'mos-getweb-api-options.php');
+Redux::init( 'mosacademy_options' );
+
 require_once ( plugin_dir_path( MOS_GETWEB_API_FILE ) . 'mos-getweb-api-outputs.php' );
 require_once ( plugin_dir_path( MOS_GETWEB_API_FILE ) . 'mos-getweb-api-hooks.php' );
 //require_once('inc/metabox/custom-cmb2-fields.php'); 
@@ -116,3 +123,8 @@ function fix_svg() {
         </style>';
 }
 add_action( 'admin_head', 'fix_svg' );
+echo "<pre>";
+//var_dump(wp_get_nav_menu_items('Widgets Menu Product Design'));
+//var_dump(get_nav_menu_locations());
+var_dump(wp_get_nav_menu_items('Widgets Menu Product Design'));
+echo "</pre>";
