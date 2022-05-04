@@ -123,8 +123,8 @@ function fix_svg() {
         </style>';
 }
 add_action( 'admin_head', 'fix_svg' );
-echo "<pre>";
+//echo "<pre>";
 //var_dump(wp_get_nav_menu_items('Widgets Menu Product Design'));
 //var_dump(get_nav_menu_locations());
-var_dump(wp_get_nav_menu_items('Widgets Menu Product Design'));
-echo "</pre>";
+//var_dump(wp_get_nav_menu_items('Widgets Menu Product Design'));
+//echo "</pre>";
