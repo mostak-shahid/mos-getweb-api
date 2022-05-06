@@ -134,41 +134,42 @@ function mos_getweb_api_menu($data) {
     //$current_menu='12';
     //$current_menu='Primary Menu';
     $menu_array = wp_get_nav_menu_items($data->get_param('id'));
-
     $menu = array();
-
-    function populate_children($menu_array, $menu_item)
-    {
-        $children = array();
-        if (!empty($menu_array)){
-            foreach ($menu_array as $k=>$m) {
-                if ($m->menu_item_parent == $menu_item->ID) {
-                    $children[$m->ID] = array();
-                    $children[$m->ID]['ID'] = $m->ID;
-                    $children[$m->ID]['title'] = $m->title;
-                    $children[$m->ID]['url'] = $m->url;
-                    unset($menu_array[$k]);
-                    $children[$m->ID]['children'] = populate_children($menu_array, $m);
-                }
-            }
-        };
-        return $children;
-    }
-
+    $x = 0;
     foreach ($menu_array as $m) {
         if (empty($m->menu_item_parent)) {
-            $menu[$m->ID] = array();
-            $menu[$m->ID]['ID'] = $m->ID;
-            $menu[$m->ID]['title'] = $m->title;
-            $menu[$m->ID]['url'] = $m->url;
-            $menu[$m->ID]['children'] = populate_children($menu_array, $m);
+            $menu[$x] = array();
+            $menu[$x]['ID'] = $m->ID;
+            $menu[$x]['title'] = $m->title;
+            $menu[$x]['class'] = get_post_meta($m->ID,'_menu_item_classes', true);
+            $menu[$x]['url'] = $m->url;
+            $menu[$x]['children'] = populate_children($menu_array, $m);
         }
+        $x++;
     }
 
     return $menu;
 
 }
-
+function populate_children($menu_array, $menu_item){
+    $children = array();
+    if (!empty($menu_array)){
+        $y = 0;
+        foreach ($menu_array as $k=>$m) {
+            if ($m->menu_item_parent == $menu_item->ID) {
+                $children[$y] = array();
+                $children[$y]['ID'] = $m->ID;
+                $children[$y]['title'] = $m->title;
+                $children[$y]['class'] = get_post_meta($m->ID,'_menu_item_classes', true);
+                $children[$y]['url'] = $m->url;
+                unset($menu_array[$k]);
+                $children[$y]['children'] = populate_children($menu_array, $m);                
+            }
+            $y++;
+        }
+    };
+    return $children;
+}
 /************************************************************************************************/
 
 function mos_getweb_api_page_list (){
