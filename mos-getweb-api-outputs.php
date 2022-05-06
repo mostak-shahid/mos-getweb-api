@@ -118,7 +118,7 @@ function mos_getweb_api_options (){
     return $mosacademy_options;
 }
 function mos_getweb_api_menus (){
-    /*global $wpdb;
+    global $wpdb;
     $output = [];
     $term_taxonomies = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}term_taxonomy WHERE taxonomy = 'nav_menu'", ARRAY_A );
     foreach($term_taxonomies as $row){
@@ -128,112 +128,47 @@ function mos_getweb_api_menus (){
             $output[$term['term_id']] = wp_get_nav_menu_items($term['name']);
         }
     }
-    return $output;*/
-    $menu = wp_nav_menu( array(
-        'menu'              => "Primary Menu", // (int|string|WP_Term) Desired menu. Accepts a menu ID, slug, name, or object.
-        'menu_class'        => "", // (string) CSS class to use for the ul element which forms the menu. Default 'menu'.
-        'menu_id'           => "", // (string) The ID that is applied to the ul element which forms the menu. Default is the menu slug, incremented.
-        'container'         => "", // (string) Whether to wrap the ul, and what to wrap it with. Default 'div'.
-        'container_class'   => "", // (string) Class that is applied to the container. Default 'menu-{menu slug}-container'.
-        'container_id'      => "", // (string) The ID that is applied to the container.
-        'fallback_cb'       => "", // (callable|bool) If the menu doesn't exists, a callback function will fire. Default is 'wp_page_menu'. Set to false for no fallback.
-        'before'            => "", // (string) Text before the link markup.
-        'after'             => "", // (string) Text after the link markup.
-        'link_before'       => "", // (string) Text before the link text.
-        'link_after'        => "", // (string) Text after the link text.
-        'echo'              => 1, // (bool) Whether to echo the menu or return it. Default true.
-        'depth'             => "", // (int) How many levels of the hierarchy are to be included. 0 means all. Default 0.
-        'walker'            => "", // (object) Instance of a custom walker class.
-        'theme_location'    => "", // (string) Theme location to be used. Must be registered with register_nav_menu() in order to be selectable by the user.
-        'items_wrap'        => "", // (string) How the list items should be wrapped. Default is a ul with an id and class. Uses printf() format with numbered placeholders.
-        'item_spacing'      => "", // (string) Whether to preserve whitespace within the menu's HTML. Accepts 'preserve' or 'discard'. Default 'preserve'.
-    ));
-    return wp_nav_menu([
-        'menu'              => 'Primary Menu',
-        'echo'              => false,
-        'walker' => new Mos_Walker_Nav_Menu()
-    ]);
+    return $output;
 }
-/**
- * Custom walker class.
- */
-class Mos_Walker_Nav_Menu extends Walker_Nav_Menu {
- 
-    /**
-     * Starts the list before the elements are added.
-     *
-     * Adds classes to the unordered list sub-menus.
-     *
-     * @param string $output Passed by reference. Used to append additional content.
-     * @param int    $depth  Depth of menu item. Used for padding.
-     * @param array  $args   An array of arguments. @see wp_nav_menu()
-     */
-    function start_lvl( &$output, $depth = 0, $args = array() ) {
-        // Depth-dependent classes.
-        $indent = ( $depth > 0  ? str_repeat( "\t", $depth ) : '' ); // code indent
-        $display_depth = ( $depth + 1); // because it counts the first submenu as 0
-        $classes = array(
-            'sub-menu',
-            ( $display_depth % 2  ? 'menu-odd' : 'menu-even' ),
-            ( $display_depth >=2 ? 'sub-sub-menu' : '' ),
-            'menu-depth-' . $display_depth
-        );
-        $class_names = implode( ' ', $classes );
- 
-        // Build HTML for output.
-        $output .= "\n" . $indent . '<ul class="' . $class_names . ' mos-menues">' . "\n";
+function mos_getweb_api_menu($data) {
+    //$current_menu='12';
+    //$current_menu='Primary Menu';
+    $menu_array = wp_get_nav_menu_items($data->get_param('id'));
+
+    $menu = array();
+
+    function populate_children($menu_array, $menu_item)
+    {
+        $children = array();
+        if (!empty($menu_array)){
+            foreach ($menu_array as $k=>$m) {
+                if ($m->menu_item_parent == $menu_item->ID) {
+                    $children[$m->ID] = array();
+                    $children[$m->ID]['ID'] = $m->ID;
+                    $children[$m->ID]['title'] = $m->title;
+                    $children[$m->ID]['url'] = $m->url;
+                    unset($menu_array[$k]);
+                    $children[$m->ID]['children'] = populate_children($menu_array, $m);
+                }
+            }
+        };
+        return $children;
     }
- 
-    /**
-     * Start the element output.
-     *
-     * Adds main/sub-classes to the list items and links.
-     *
-     * @param string $output Passed by reference. Used to append additional content.
-     * @param object $item   Menu item data object.
-     * @param int    $depth  Depth of menu item. Used for padding.
-     * @param array  $args   An array of arguments. @see wp_nav_menu()
-     * @param int    $id     Current item ID.
-     */
-    function start_el( &$output, $item, $depth = 0, $args = array(), $id = 0 ) {
-        global $wp_query;
-        $indent = ( $depth > 0 ? str_repeat( "\t", $depth ) : '' ); // code indent
- 
-        // Depth-dependent classes.
-        $depth_classes = array(
-            ( $depth == 0 ? 'main-menu-item' : 'sub-menu-item' ),
-            ( $depth >=2 ? 'sub-sub-menu-item' : '' ),
-            ( $depth % 2 ? 'menu-item-odd' : 'menu-item-even' ),
-            'menu-item-depth-' . $depth
-        );
-        $depth_class_names = esc_attr( implode( ' ', $depth_classes ) );
- 
-        // Passed classes.
-        $classes = empty( $item->classes ) ? array() : (array) $item->classes;
-        $class_names = esc_attr( implode( ' ', apply_filters( 'nav_menu_css_class', array_filter( $classes ), $item ) ) );
- 
-        // Build HTML.
-        $output .= $indent . '<li id="nav-menu-item-'. $item->ID . '" class="' . $depth_class_names . ' ' . $class_names . '">';
- 
-        // Link attributes.
-        $attributes  = ! empty( $item->attr_title ) ? ' title="'  . esc_attr( $item->attr_title ) .'"' : '';
-        $attributes .= ! empty( $item->target )     ? ' target="' . esc_attr( $item->target     ) .'"' : '';
-        $attributes .= ! empty( $item->xfn )        ? ' rel="'    . esc_attr( $item->xfn        ) .'"' : '';
-        $attributes .= ! empty( $item->url )        ? ' href="'   . esc_attr( $item->url        ) .'"' : '';
-        $attributes .= ' class="menu-link ' . ( $depth > 0 ? 'sub-menu-link' : 'main-menu-link' ) . '"';
- 
-        // Build HTML output and pass through the proper filter.
-        $item_output = sprintf( '%1$s<a%2$s>%3$s%4$s%5$s</a>%6$s',
-            $args->before,
-            $attributes,
-            $args->link_before,
-            apply_filters( 'the_title', $item->title, $item->ID ),
-            $args->link_after,
-            $args->after
-        );
-        $output .= apply_filters( 'walker_nav_menu_start_el', $item_output, $item, $depth, $args );
+
+    foreach ($menu_array as $m) {
+        if (empty($m->menu_item_parent)) {
+            $menu[$m->ID] = array();
+            $menu[$m->ID]['ID'] = $m->ID;
+            $menu[$m->ID]['title'] = $m->title;
+            $menu[$m->ID]['url'] = $m->url;
+            $menu[$m->ID]['children'] = populate_children($menu_array, $m);
+        }
     }
+
+    return $menu;
+
 }
+
 /************************************************************************************************/
 
 function mos_getweb_api_page_list (){
@@ -329,6 +264,10 @@ add_action('rest_api_init', function() {
 	register_rest_route('mos-getweb-api/v1', 'menus', [
 		'methods' => 'GET',
 		'callback' => 'mos_getweb_api_menus',
+	]); 
+	register_rest_route('mos-getweb-api/v1', 'menu/(?P<id>[0-9]+)', [
+		'methods' => 'GET',
+		'callback' => 'mos_getweb_api_menu',
 	]);    
     
 	register_rest_route('mos-getweb-api/v1', 'page-list', [
