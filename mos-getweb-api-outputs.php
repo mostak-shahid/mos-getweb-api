@@ -120,13 +120,14 @@ function mos_getweb_api_options (){
 function mos_getweb_api_menus (){
     global $wpdb;
     $output = [];
+    
     $term_taxonomies = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}term_taxonomy WHERE taxonomy = 'nav_menu'", ARRAY_A );
     foreach($term_taxonomies as $row){
-        $terms = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}terms WHERE term_id={$row['term_id']}", ARRAY_A ); 
-        foreach($terms as $term) {            
+        $output[$row['term_id']] = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}terms WHERE term_id={$row['term_id']}", ARRAY_A ); 
+        /*foreach($terms as $term) {            
             //$output[$term['term_id']]['name'] = $term['name'];    
             $output[$term['term_id']] = wp_get_nav_menu_items($term['name']);
-        }
+        }*/
     }
     return $output;
 }
@@ -143,7 +144,7 @@ function mos_getweb_api_menu($data) {
             $menu[$x]['title'] = $m->title;
             $menu[$x]['class'] = get_post_meta($m->ID,'_menu_item_classes', true);
             $menu[$x]['url'] = $m->url;
-            $menu[$x]['children'] = populate_children($menu_array, $m);
+            $menu[$x]['submenu'] = populate_children($menu_array, $m);
         }
         $x++;
     }
@@ -163,7 +164,7 @@ function populate_children($menu_array, $menu_item){
                 $children[$y]['class'] = get_post_meta($m->ID,'_menu_item_classes', true);
                 $children[$y]['url'] = $m->url;
                 unset($menu_array[$k]);
-                $children[$y]['children'] = populate_children($menu_array, $m);                
+                $children[$y]['submenu'] = populate_children($menu_array, $m);                
             }
             $y++;
         }

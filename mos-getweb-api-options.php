@@ -435,6 +435,27 @@
                     //'tinymce' => array(),
                     'quicktags'     => false,
                 )
+            ),  
+            array(
+                'id'          => 'sections-footer-career',
+                'type'        => 'text',
+                'title'       => __( 'Careers URL', 'redux-framework-demo' ),
+            ),       
+            array(
+                'id'       => 'sections-footer-copyright',
+                'type'     => 'editor',
+                'title'    => __( 'Copyright Content', 'redux-framework-demo' ),
+                'default'  => '',
+                'args'    => array(
+                    'wpautop'       => false,
+                    'media_buttons' => true,
+                    'textarea_rows' => 5,
+                    //'tabindex' => 1,
+                    //'editor_css' => '',
+                    //'teeny'         => false,
+                    //'tinymce' => array(),
+                    'quicktags'     => true,
+                )
             ),
             array(
                 'id'       => 'sections-footer-gallery',
