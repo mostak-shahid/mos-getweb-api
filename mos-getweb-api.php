@@ -6,7 +6,7 @@
  * Version:           1.0.0
  * Requires at least: 5.2
  * Requires PHP:      7.2
- * Author:            John Smith
+ * Author:            Md. Mostak Shahid
  * Author URI:        http://www.mdmostakshahid.com/
  * License:           GPL v2 or later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
@@ -22,12 +22,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 if ( ! defined( 'MOS_GETWEB_API_FILE' ) ) {
 	define( 'MOS_GETWEB_API_FILE', __FILE__ );
 }
+require_once ( plugin_dir_path( MOS_GETWEB_API_FILE ) . 'inc/aq_resizer.php' );
 require_once ( plugin_dir_path( MOS_GETWEB_API_FILE ) . 'inc/cmb2/init.php' );
+require_once ( plugin_dir_path( MOS_GETWEB_API_FILE ) . 'inc/cmb2/extensions/custom-address/custom-address.php' );
+require_once ( plugin_dir_path( MOS_GETWEB_API_FILE ) . 'inc/cmb2/extensions/custom-button/custom-button.php' );
 require_once ( plugin_dir_path( MOS_GETWEB_API_FILE ) . 'mos-getweb-api-metaboxes.php' );
+require_once ( plugin_dir_path( MOS_GETWEB_API_FILE ) . 'mos-getweb-user-profile-picture.php' );
 
 require_once ( plugin_dir_path( MOS_GETWEB_API_FILE ) . 'inc/theme-options/ReduxCore/framework.php'); 
 require_once ( plugin_dir_path( MOS_GETWEB_API_FILE ) . 'inc/theme-options/loader.php');
-// require_once ( plugin_dir_path( MOS_GETWEB_API_FILE ) . 'inc/theme-options/sample/sample-config.php');
+//require_once ( plugin_dir_path( MOS_GETWEB_API_FILE ) . 'inc/theme-options/sample/sample-config.php');
+// require_once ( plugin_dir_path( MOS_GETWEB_API_FILE ) . 'inc/theme-options/sample/theme-options.php');
 require_once ( plugin_dir_path( MOS_GETWEB_API_FILE ) . 'mos-getweb-api-options.php');
 Redux::init( 'mosacademy_options' );
 
@@ -123,8 +128,46 @@ function fix_svg() {
         </style>';
 }
 add_action( 'admin_head', 'fix_svg' );
-//echo "<pre>";
-//var_dump(wp_get_nav_menu_items('Widgets Menu Product Design'));
-//var_dump(get_nav_menu_locations());
-//var_dump(wp_get_nav_menu_items('Widgets Menu Product Design'));
-//echo "</pre>";
+
+
+if (!function_exists('create_necessary_contact_table')){
+    function create_necessary_contact_table() {
+        global $wpdb;
+        require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+        $charset_collate = $wpdb->get_charset_collate();        
+        $table_name = $wpdb->prefix.'contact_data';
+        $sql = "CREATE TABLE $table_name (
+            ID bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, 
+            source varchar(255) DEFAULT '' NOT NULL,
+            view tinyint(1) NOT NULL,
+            time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+            data text NOT NULL,                      
+            PRIMARY KEY  (ID)
+        ) $charset_collate;";
+        dbDelta( $sql );        
+    }
+}
+//add_action('init', 'create_necessary_mos_order_table');
+register_activation_hook( __FILE__, 'create_necessary_contact_table' );
+
+if (!function_exists('create_necessary_apply_table')){
+    function create_necessary_apply_table() {
+        global $wpdb;
+        require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+        $charset_collate = $wpdb->get_charset_collate();        
+        $table_name = $wpdb->prefix.'apply_data';
+        $sql = "CREATE TABLE $table_name (
+            ID bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, 
+            job_id bigint(20) NOT NULL,
+            email varchar(255) DEFAULT '' NOT NULL,
+            view int(1) NOT NULL,
+            time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,   
+            data text NOT NULL,                 
+            PRIMARY KEY  (ID)
+        ) $charset_collate;";
+        dbDelta( $sql );        
+    }
+}
+//add_action('init', 'create_necessary_mos_order_table');
+register_activation_hook( __FILE__, 'create_necessary_apply_table' );
+

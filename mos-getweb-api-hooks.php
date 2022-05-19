@@ -47,3 +47,47 @@ add_action('manage_technology_posts_custom_column', function($column_key, $post_
         echo $terms_string;
 	}
 }, 10, 2);
+
+add_filter('manage_block_posts_columns', function($columns) {
+    
+//    var_dump($columns);
+//    unset($columns['date']);
+    $column['title'] = 'Title';
+    $column['block_category'] = 'Categories';
+    $column['date'] = 'Date';
+
+    return $column;
+	//return array_merge($columns, ['block_category' => __('Categories', 'textdomain')]);
+});
+ 
+add_action('manage_block_posts_custom_column', function($column_key, $post_id) {
+	if ($column_key == 'block_category') {
+		$terms_string = '';        
+        $term_obj_list = get_the_terms( $post_id, 'block_category' );
+        $terms_string = ($term_obj_list)?join(', ', wp_list_pluck($term_obj_list, 'name')):'';
+        
+        echo $terms_string;
+	}
+}, 10, 2);
+
+add_filter('manage_job_posts_columns', function($columns) {
+    
+//    var_dump($columns);
+//    unset($columns['date']);
+    $column['title'] = 'Title';
+    $column['job_category'] = 'Categories';
+    $column['date'] = 'Date';
+
+    return $column;
+	//return array_merge($columns, ['job_category' => __('Categories', 'textdomain')]);
+});
+ 
+add_action('manage_job_posts_custom_column', function($column_key, $post_id) {
+	if ($column_key == 'job_category') {
+		$terms_string = '';        
+        $term_obj_list = get_the_terms( $post_id, 'job_category' );
+        $terms_string = ($term_obj_list)?join(', ', wp_list_pluck($term_obj_list, 'name')):'';
+        
+        echo $terms_string;
+	}
+}, 10, 2);

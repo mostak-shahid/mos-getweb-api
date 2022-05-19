@@ -271,8 +271,7 @@
             )
         )
     ) );
-    //Logo Settings
-    
+    //Contact Info    
     Redux::setSection( $opt_name, array(
         'title'            => __( 'Contact Info', 'redux-framework-demo' ),
         'id'               => 'contact-section',
@@ -317,7 +316,7 @@
                 )
             ),
             array(
-                'id'          => 'contact-address',
+                'id'          => 'contactAddress',
                 'type'        => 'multi_text',
                 'title'       => __( 'Contact Address', 'redux-framework-demo' ),           
             ),
@@ -326,6 +325,11 @@
                 'type'        => 'multi_text',
                 //'type'        => 'kad_icons',
                 'title'       => __( 'Social Media', 'redux-framework-demo' ),             
+            ),
+            array(
+                'id'             => 'contact-request-link',
+                'type'           => 'text',
+                'title'          => __( 'Request a Quote Link', 'redux-framework-demo' ),
             ),
         )
     ) );
