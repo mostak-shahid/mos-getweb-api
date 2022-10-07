@@ -107,7 +107,7 @@ if ( ! class_exists( 'ReduxFramework_mos_multi_text' ) ) {
 
             wp_enqueue_script(
                 'redux-field-multi-text-js',
-                get_template_directory_uri() . '/inc/theme-options/extensions/mos_multi_text/mos_multi_text/field_mos_multi_text' . Redux_Functions::isMin() . '.js',
+                plugin_dir_path( MOS_GETWEB_API_FILE ) . '/inc/theme-options/extensions/mos_multi_text/mos_multi_text/field_mos_multi_text' . Redux_Functions::isMin() . '.js',
                 array( 'jquery', 'redux-js' ),
                 time(),
                 true
@@ -116,7 +116,7 @@ if ( ! class_exists( 'ReduxFramework_mos_multi_text' ) ) {
             if ($this->parent->args['dev_mode']) {
                 wp_enqueue_style(
                     'redux-field-multi-text-css',
-                    get_template_directory_uri() . '/inc/theme-options/extensions/mos_multi_text/mos_multi_text/field_mos_multi_text.css',
+                    plugin_dir_path( MOS_GETWEB_API_FILE ) . '/inc/theme-options/extensions/mos_multi_text/mos_multi_text/field_mos_multi_text.css',
                     array(),
                     time(),
                     'all'

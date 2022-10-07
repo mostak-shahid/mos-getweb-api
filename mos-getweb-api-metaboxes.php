@@ -1,7 +1,12 @@
 <?php
 function mosacademy_metaboxes() {
+    $optionCat = ['post'=>'Blogs', 'testimonial'=>'Testimonials'];
+    $blockCategories = mos_get_terms('block_category');
+    //var_dump($blockCategories);
+    foreach($blockCategories as $cat){
+        $optionCat[$cat['term_id']] = $cat['name'];
+    }
     $prefix = '_mosacademy_';
-
     $banner_settings = new_cmb2_box(array(
         'id' => $prefix . 'banner_settings',
         'title' => __('Banner Settings', 'cmb2'),
@@ -64,9 +69,67 @@ function mosacademy_metaboxes() {
         'object_types' => array('project'),
     ));
     $project_settings->add_field( array(
-        'name' => 'Project URL',
+        'name' => 'Project Follow Link',
         'type' => 'text_url',
-        'id'   => $prefix.'project_url',
+        'id'   => $prefix.'project_follow_link',
+        'default' => 'https://www.facebook.com/getwebinc'
+    ));
+    $project_settings->add_field( array(
+        'name' => 'Project Tool',
+        'id'   => $prefix.'project_tool',
+        'type'    => 'file',
+        // Optional:
+        'options' => array(
+            'url' => true, // Hide the text input for the url
+        ),
+        'text'    => array(
+            'add_upload_file_text' => 'Add Project Tool Logo' // Change upload button text. Default: "Add or Upload File"
+        ),
+        // query_args are passed to wp.media's library query.
+        'query_args' => array( 'type' => 'image' ),
+        /*'query_args' => array(
+            //'type' => 'application/pdf', // Make library only display PDFs.
+            // Or only allow gif, jpg, or png images
+            'type' => array(
+             'image/gif',
+             'image/jpeg',
+             'image/png',
+            ),
+        ),*/
+        'preview_size' => 'large', // Image size to use when previewing in the admin.
+    ));
+    $project_settings->add_field( array(
+        'name' => 'Project Gallery',
+        'desc' => '',
+        'id'   => $prefix.'project_gallery',
+        'type' => 'file_list',
+        'preview_size' => array( 'large' ), // Default: array( 50, 50 )
+        'query_args' => array( 'type' => 'image' ), // Only images attachment
+        // Optional, override default text strings
+        /*'text' => array(
+            'add_upload_files_text' => 'Replacement', // default: "Add or Upload Files"
+            'remove_image_text' => 'Replacement', // default: "Remove Image"
+            'file_text' => 'Replacement', // default: "File:"
+            'file_download_text' => 'Replacement', // default: "Download"
+            'remove_text' => 'Replacement', // default: "Remove"
+        ),*/
+    ));
+    $project_settings->add_field( array(
+        'name' => 'Project Likes',
+        'type' => 'text',
+        'id'   => $prefix.'project_like',
+        'repeatable' => true,
+    ));
+    /*$project_settings->add_field( array(
+        'name' => 'Project views',
+        'type' => 'text',
+        'id'   => $prefix.'project_view',
+        'repeatable' => true,
+    ));*/
+    $project_settings->add_field( array(
+        'name' => 'Project views count',
+        'type' => 'text',
+        'id'   => $prefix.'project_view_count',
     ));
 
     $testimonial_settings = new_cmb2_box(array(
@@ -136,7 +199,7 @@ function mosacademy_metaboxes() {
             //'teeny' => false, // output the minimal editor config used in Press This
             //'dfw' => false, // replace the default fullscreen with DFW (needs specific css)
             'tinymce' => true, // load TinyMCE, can be used to pass settings directly to TinyMCE using an array()
-            'quicktags' => false // load Quicktags, can be used to pass settings directly to Quicktags using an array()
+            'quicktags' => true // load Quicktags, can be used to pass settings directly to Quicktags using an array()
         ),
         'id'   => $prefix.'page_banner_title',
     ));
@@ -146,12 +209,31 @@ function mosacademy_metaboxes() {
         'id'   => $prefix.'page_banner_intro',
     ));
     $page_banner_details->add_field( array(
+        'name' => 'Feature Image',
+        'id'   => $prefix.'page_banner_feature_image',
+        'type'    => 'file',
+        // Optional:
+        'options' => array(
+            'url' => true, // Hide the text input for the url
+        ),
+        'text'    => array(
+            'add_upload_file_text' => 'Add Feature Image' // Change upload button text. Default: "Add or Upload File"
+        ),
+        // query_args are passed to wp.media's library query.
+        'query_args' => array(
+            //'type' => 'application/pdf', // Make library only display PDFs.
+            // Or only allow gif, jpg, or png images
+            'type' => array('image'),
+        ),
+        'preview_size' => 'large', // Image size to use when previewing in the admin.
+    ));
+    $page_banner_details->add_field( array(
         'name' => 'Button',
         'type' => 'button',
         'id'   => $prefix.'page_banner_button',
     ));
     $page_banner_details->add_field( array(
-        'name' => 'Banner Image',
+        'name' => 'Background Image',
         'id'   => $prefix.'page_banner_image',
         'type'    => 'file',
         // Optional:
@@ -159,7 +241,7 @@ function mosacademy_metaboxes() {
             'url' => true, // Hide the text input for the url
         ),
         'text'    => array(
-            'add_upload_file_text' => 'Add Banner Image' // Change upload button text. Default: "Add or Upload File"
+            'add_upload_file_text' => 'Add Background Image' // Change upload button text. Default: "Add or Upload File"
         ),
         // query_args are passed to wp.media's library query.
         'query_args' => array(
@@ -172,6 +254,35 @@ function mosacademy_metaboxes() {
             ),
         ),
         'preview_size' => 'large', // Image size to use when previewing in the admin.
+    ));
+    
+    $page_banner_details->add_field( array(
+        'name' => 'Banner Images',
+        'desc' => '',
+        'id'   => $prefix.'page_banner_image_gallery',
+        'type' => 'file_list',
+        'preview_size' => array( 100, 100 ), // Default: array( 50, 50 )
+        'query_args' => array( 'type' => 'image' ), // Only images attachment
+        // Optional, override default text strings
+        /*'text' => array(
+            'add_upload_files_text' => 'Replacement', // default: "Add or Upload Files"
+            'remove_image_text' => 'Replacement', // default: "Remove Image"
+            'file_text' => 'Replacement', // default: "File:"
+            'file_download_text' => 'Replacement', // default: "Download"
+            'remove_text' => 'Replacement', // default: "Remove"
+        ),*/
+    ));
+    
+    $page_banner_details->add_field(array(
+        'name' => 'Link to',
+        'type' => 'button',
+        'id'   => $prefix.'page_banner_button_2',
+    ));
+    $page_banner_details->add_field( array(
+        'name' => 'Hide Banner',
+        'desc' => 'Yes I like to hide banner for this page',
+        'id'   => $prefix.'banner_hide',
+        'type' => 'checkbox',
     ));
     /*************************************************************/
     
@@ -187,17 +298,17 @@ function mosacademy_metaboxes() {
     $page_group_details_id = $page_group_details->add_field( array(
         'id'   => $prefix . 'page_group_details_group',
         'type' => 'group',
-        // 'repeatable'  => false, // use false if you want non-repeatable group
+        'repeatable'  => true, // use false if you want non-repeatable group
         'options'     => array(
             'group_title'       => __( 'Section {#}', 'cmb2' ), // since version 1.1.4, {#} gets replaced by row number
             'add_button'        => __( 'Add Another Section', 'cmb2' ),
             'remove_button'     => __( 'Remove Section', 'cmb2' ),
             'sortable'          => true,
-            // 'closed'         => true, // true to have the groups closed by default
-            // 'remove_confirm' => esc_html__( 'Are you sure you want to remove?', 'cmb2' ), // Performs confirmation before removing group.
+            'closed'         => true, // true to have the groups closed by default
+            'remove_confirm' => esc_html__( 'Are you sure you want to remove?', 'cmb2' ), // Performs confirmation before removing group.
         ),
     )); 
-    $page_group_details->add_group_field( $page_group_details_id, array(
+    /*$page_group_details->add_group_field( $page_group_details_id, array(
         'name' => 'Section Title',
         'id'   => $prefix . 'page_group_title_text',
         'type'    => 'wysiwyg', 
@@ -214,7 +325,7 @@ function mosacademy_metaboxes() {
             'tinymce' => true, // load TinyMCE, can be used to pass settings directly to TinyMCE using an array()
             'quicktags' => true // load Quicktags, can be used to pass settings directly to Quicktags using an array()
         ),
-    ));    
+    )); */   
     $page_group_details->add_group_field( $page_group_details_id, array(
         'name'    => 'Section Sub titles',
         'id'      => $prefix . 'page_group_sub_titles',
@@ -238,7 +349,12 @@ function mosacademy_metaboxes() {
             'tinymce' => true, // load TinyMCE, can be used to pass settings directly to TinyMCE using an array()
             'quicktags' => true // load Quicktags, can be used to pass settings directly to Quicktags using an array()
         ),
-    ));    
+    ));  
+    /*$page_group_details->add_group_field( $page_group_details_id, array(
+        'name' => 'Section Description',
+        'id'   => $prefix . 'page_group_title_description',
+        'type'    => 'textarea', 
+    ));*/  
     $page_group_details->add_group_field( $page_group_details_id, array(
         'name' => 'Section Button',
         'type' => 'button',
@@ -291,24 +407,15 @@ function mosacademy_metaboxes() {
             ),
         ),
         'preview_size' => 'medium', // Image size to use when previewing in the admin.
-    ));    
-    $page_group_details->add_group_field( $page_group_details_id, array(
-        'name' => 'Section Component Name',
-        'type' => 'text',
-        'id'   => $prefix.'page_group_component_name',
-    ));    
-    $page_group_details->add_group_field( $page_group_details_id, array(
-        'name' => 'Section Class',
-        'type' => 'text',
-        'id'   => $prefix.'page_group_css',
-    ));
+    ));     
+    
     $page_group_details->add_group_field( $page_group_details_id, array(
         'name'             => 'Section Content Width',
         'id'               => $prefix . 'page_group_content_width',
         'type'             => 'select',
-        'default'          => 'container',
+        'default'          => 'container-lg',
         'options'          => array(
-            'container' => __( 'Boxed', 'cmb2' ),
+            'container-lg' => __( 'Boxed', 'cmb2' ),
             'container-fluid full-width'   => __( 'Full Width', 'cmb2' ),
         ),
     ));
@@ -323,6 +430,114 @@ function mosacademy_metaboxes() {
             'con-right'   => __( 'Right aligned Content', 'cmb2' ),
             'con-bottom'   => __( 'Bottom aligned Content', 'cmb2' ),
         ),
+    ));
+    $page_group_details->add_group_field( $page_group_details_id, array(
+        'name' => 'Section Class',
+        'type' => 'text',
+        'id'   => $prefix.'page_group_css',
+    ));
+	$page_group_details->add_group_field( $page_group_details_id, array(
+		'name' => 'Custom Component',
+		'id'   => $prefix.'conditional_checkbox',
+        'desc' => 'Yes, I like to add custom component',
+		'type' => 'checkbox',
+	));
+    $page_group_details->add_group_field( $page_group_details_id, array(
+        'name' => 'Component Name',
+        'type' => 'text',
+        'id'   => $prefix.'page_group_component_name',
+		'attributes' => array(
+			'required'               => true, // Will be required only if visible.
+			'data-conditional-id'    => wp_json_encode( array( $page_group_details_id, $prefix.'conditional_checkbox' ) ),
+			'data-conditional-value' => 'on',
+		),
+    )); 
+    $page_group_details->add_group_field( $page_group_details_id, array(
+        'name' => 'Component Data',
+        'type' => 'text',
+        'id'   => $prefix.'page_group_component_data',
+		'attributes' => array(
+			'required'               => false, // Will be required only if visible.
+			'data-conditional-id'    => wp_json_encode( array( $page_group_details_id, $prefix.'conditional_checkbox' ) ),
+			'data-conditional-value' => 'on',
+		),
+    ));   	
+    $page_group_details->add_group_field( $page_group_details_id, array(
+        'name'             => 'Component Set',
+        'id'               => $prefix.'page_group_components',
+        'type'             => 'pw_select',
+        'show_option_none' => true,
+        'options'          => $optionCat,
+		'attributes' => array(
+			//'required'               => true, // Will be required only if visible.
+			'data-conditional-id'    => wp_json_encode( array( $page_group_details_id, $prefix.'conditional_checkbox' ) ),
+			'data-conditional-value' => 'off',
+		),
+    ));
+    $page_group_details->add_group_field( $page_group_details_id, array(
+        'name' => 'Components Count',
+        'type' => 'text',
+        'id'   => $prefix.'page_group_component_count_total',
+		'attributes' => array(
+			//'required'               => true, // Will be required only if visible.
+			'data-conditional-id'    => wp_json_encode( array( $page_group_details_id, $prefix.'conditional_checkbox' ) ),
+			'data-conditional-value' => 'off',
+		),
+    ));  
+    $page_group_details->add_group_field( $page_group_details_id, array(
+        'name'             => 'Component Layout',
+        'desc'             => 'Select an option',
+        'id'               => $prefix.'page_group_component_layout',
+        'type'             => 'select',
+        'show_option_none' => true,
+        'options'          => array(
+            'block' => __( 'Block', 'cmb2' ),
+            'slider'   => __( 'Slider', 'cmb2' ),
+            'accordion'     => __( 'Accordion', 'cmb2' ),
+            'tab'     => __( 'Tab', 'cmb2' ),
+        ),
+		'attributes' => array(
+			//'required'               => true, // Will be required only if visible.
+			'data-conditional-id'    => wp_json_encode( array( $page_group_details_id, $prefix.'conditional_checkbox' ) ),
+			'data-conditional-value' => 'off',
+		),
+    ));
+    $page_group_details->add_group_field( $page_group_details_id, array(
+        'name' => 'Components Columns Count',
+        'type' => 'select',
+        'id'   => $prefix.'page_group_component_count_col',
+        'options'          => array(
+			'col-12'								=> __( 'Single Column', 'cmb2' ),
+			'col-sm-6'								=> __( '2 Columns', 'cmb2' ),
+			'col-lg-4 col-sm-6'						=> __( '3 Columns', 'cmb2' ),
+			'col-lg-3 col-sm-6'						=> __( '4 Columns', 'cmb2' ),
+			'col-lg-2 col-sm-4 col-lg-one-fifth'	=> __( '5 Columns', 'cmb2' ),
+			'col-lg-2 col-sm-4 col-6'				=> __( '6 Columns', 'cmb2' ),
+        ),		
+		'attributes' => array(
+			//'required'               => true, // Will be required only if visible.
+			'data-conditional-id'    => wp_json_encode( array( $page_group_details_id, $prefix.'conditional_checkbox' ) ),
+			'data-conditional-value' => 'off',
+		),
+    ));
+    $page_group_details->add_group_field( $page_group_details_id, array(
+        'name'             => 'Unit Template',
+        'desc'             => 'Select an option',
+        'id'               => $prefix.'page_group_component_template',
+        'type'             => 'select',
+        'options'          => array(
+            'template-1' => __( 'Gradient BG', 'cmb2' ),
+            'template-2'   => __( 'Basic Template', 'cmb2' ),
+            'template-3'     => __( 'Green Title border', 'cmb2' ),
+            'template-4'     => __( 'With Counter', 'cmb2' ),
+            'template-5'     => __( 'Basic Text Centered', 'cmb2' ),
+            'template-6'     => __( 'With Arrow', 'cmb2' ),
+        ),
+		'attributes' => array(
+			//'required'               => true, // Will be required only if visible.
+			'data-conditional-id'    => wp_json_encode( array( $page_group_details_id, $prefix.'conditional_checkbox' ) ),
+			'data-conditional-value' => 'off',
+		),
     ));
     
     $block_settings = new_cmb2_box(array(
@@ -340,6 +555,11 @@ function mosacademy_metaboxes() {
         'id'   => $prefix.'blobk_url',
     ));
     $block_settings->add_field( array(
+        'name' => 'Block Custom HTML',
+        'type' => 'textarea_code',
+        'id'   => $prefix.'custom_html',
+    ));
+    /*$block_settings->add_field( array(
         'name'    => 'Icon Image',
         'desc'    => 'Upload an image or enter an URL.',
         'id'      => $prefix . 'blobk_icon_image',
@@ -386,7 +606,7 @@ function mosacademy_metaboxes() {
             ),
         ),
         //'preview_size' => 'small', // Image size to use when previewing in the admin.
-    )); 
+    )); */
     
     $job_settings = new_cmb2_box(array(
         'id' => $prefix . 'job_settings',

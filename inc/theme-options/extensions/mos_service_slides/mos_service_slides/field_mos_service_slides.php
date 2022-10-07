@@ -271,7 +271,7 @@ if (!class_exists('ReduxFramework_mos_service_slides')) {
             
             wp_enqueue_style (
                 'field_mos_service_slides', 
-                get_template_directory_uri() . '/inc/theme-options/extensions/mos_service_slides/mos_service_slides/field_mos_service_slides.css', 
+                plugin_dir_path( MOS_GETWEB_API_FILE ) . '/inc/theme-options/extensions/mos_service_slides/mos_service_slides/field_mos_service_slides.css', 
                 array(),
                 time (), 
                 'all'
@@ -287,8 +287,8 @@ if (!class_exists('ReduxFramework_mos_service_slides')) {
 
             wp_enqueue_script (
                 'field_mos_service_slides', 
-                //get_template_directory_uri() . '/inc/theme-options/extensions/mos_service_slides/mos_service_slides/field_mos_service_slides' . Redux_Functions::isMin () . '.js', 
-                get_template_directory_uri() . '/inc/theme-options/extensions/mos_service_slides/mos_service_slides/field_mos_service_slides.js', 
+                //plugin_dir_path( MOS_GETWEB_API_FILE ) . '/inc/theme-options/extensions/mos_service_slides/mos_service_slides/field_mos_service_slides' . Redux_Functions::isMin () . '.js', 
+                plugin_dir_path( MOS_GETWEB_API_FILE ) . '/inc/theme-options/extensions/mos_service_slides/mos_service_slides/field_mos_service_slides.js', 
                 array( 'jquery', 'jquery-ui-core', 'jquery-ui-accordion', 'jquery-ui-sortable', 'redux-field-media-js' ),
                 time (), 
                 true

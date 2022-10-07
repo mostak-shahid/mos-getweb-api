@@ -263,7 +263,7 @@
                 'title'    => __( 'Logo', 'redux-framework-demo' ),
                 'compiler' => 'true',
                 'subtitle' => __( 'Upload your logo here.', 'redux-framework-demo' ),
-                'default'  => array( 'url' => get_template_directory_uri().'/images/logo.png' ),
+                'default'  => array( 'url' => plugin_dir_path( MOS_GETWEB_API_FILE ).'/images/logo.png' ),
             ),
             array(
                 'id'       => 'logo-option',
@@ -586,11 +586,11 @@
                 'options'  => array(
                     '1' => array(
                         'alt' => 'Row View',
-                        'img' => get_template_directory_uri() .'/images/horizontal.png'
+                        'img' => plugin_dir_path( MOS_GETWEB_API_FILE ) .'/images/horizontal.png'
                     ),
                     '2' => array(
                         'alt' => 'Column View',
-                        'img' => get_template_directory_uri() .'/images/vertical.png'
+                        'img' => plugin_dir_path( MOS_GETWEB_API_FILE ) .'/images/vertical.png'
                     )
                 ),
                 'default'  => '1'
@@ -2772,11 +2772,11 @@
                 'options'  => array(
                     '1' => array(
                         'alt' => 'Row View',
-                        'img' => get_template_directory_uri() .'/images/horizontal.png'
+                        'img' => plugin_dir_path( MOS_GETWEB_API_FILE ) .'/images/horizontal.png'
                     ),
                     '2' => array(
                         'alt' => 'Column View',
-                        'img' => get_template_directory_uri() .'/images/vertical.png'
+                        'img' => plugin_dir_path( MOS_GETWEB_API_FILE ) .'/images/vertical.png'
                     )
                 ),
                 'default'  => '1'
@@ -3443,7 +3443,7 @@
                 'url'      => true,
                 'title'    => __( 'Zoom Icon', 'redux-framework-demo' ),
                 'compiler' => 'true',                
-                'default'  => array( 'url' => get_template_directory_uri() . '/images/plus.png' ),
+                'default'  => array( 'url' => plugin_dir_path( MOS_GETWEB_API_FILE ) . '/images/plus.png' ),
             ), 
             array(
                 'id'       => 'sections-gallery-view-more',
@@ -3603,7 +3603,7 @@
                 'url'      => true,
                 'title'    => __( 'Zoom Image', 'redux-framework-demo' ),
                 'compiler' => 'true',
-                'default'  => array( 'url' => get_template_directory_uri() . '/images/zoom.png' ),
+                'default'  => array( 'url' => plugin_dir_path( MOS_GETWEB_API_FILE ) . '/images/zoom.png' ),
             ),
             array(
                 'id'       => 'sections-newgallery-gallery',
@@ -3808,7 +3808,7 @@
      * Custom function for filtering the sections array. Good for child themes to override or add to the sections.
      * Simply include this function in the child themes functions.php file.
      * NOTE: the defined constants for URLs, and directories will NOT be available at this point in a child theme,
-     * so you must use get_template_directory_uri() if you want to use any of the built in icons
+     * so you must use plugin_dir_path( MOS_GETWEB_API_FILE ) if you want to use any of the built in icons
      * */
     if ( ! function_exists( 'dynamic_section' ) ) {
         function dynamic_section( $sections ) {

@@ -240,7 +240,7 @@ if (!class_exists('ReduxFramework_kad_icons')) {
             
             wp_enqueue_style (
                 'field_kad_slides', 
-                get_template_directory_uri() . '/inc/theme-options/extensions/kad_icons/kad_icons/field_kad_icons.css', 
+                plugin_dir_path( MOS_GETWEB_API_FILE ) . '/inc/theme-options/extensions/kad_icons/kad_icons/field_kad_icons.css', 
                 array(),
                 time (), 
                 'all'
@@ -256,7 +256,7 @@ if (!class_exists('ReduxFramework_kad_icons')) {
 
             wp_enqueue_script (
                 'field_kad_slides', 
-                get_template_directory_uri() . '/inc/theme-options/extensions/kad_icons/kad_icons/field_kad_icons' . Redux_Functions::isMin () . '.js', 
+                plugin_dir_path( MOS_GETWEB_API_FILE ) . '/inc/theme-options/extensions/kad_icons/kad_icons/field_kad_icons' . Redux_Functions::isMin () . '.js', 
                 array( 'jquery', 'jquery-ui-core', 'jquery-ui-accordion', 'jquery-ui-sortable', 'redux-field-media-js' ),
                 time (), 
                 true
@@ -275,7 +275,7 @@ if (!class_exists('ReduxFramework_kad_icons')) {
 
             wp_enqueue_script (
                 'kad-field-icons-js', 
-                get_template_directory_uri() . '/themeoptions/options/extensions/kad_icons/kad_icons/field_kad_icons-min.js', 
+                plugin_dir_path( MOS_GETWEB_API_FILE ) . '/themeoptions/options/extensions/kad_icons/kad_icons/field_kad_icons-min.js', 
                 array( 'jquery', 'jquery-ui-core', 'jquery-ui-accordion', 'wp-color-picker' ), 
                 time (), 
                 true
@@ -283,7 +283,7 @@ if (!class_exists('ReduxFramework_kad_icons')) {
 
             wp_enqueue_style (
                 'kad-field-icons-css', 
-                get_template_directory_uri() . '/themeoptions/options/extensions/kad_icons/kad_icons/field_kad_icons.css', 
+                plugin_dir_path( MOS_GETWEB_API_FILE ) . '/themeoptions/options/extensions/kad_icons/kad_icons/field_kad_icons.css', 
                 time (), 
                 true
             );
