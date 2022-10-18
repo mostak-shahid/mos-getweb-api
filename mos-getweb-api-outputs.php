@@ -891,7 +891,8 @@ function mos_getweb_dropbox_func($file, $dropbox='https://www.dropbox.com/home/A
     $fp = fopen($path, 'rb');
     $size = filesize($path);
 
-    $token = 'sl.BQ9fGkIBi7lYQxzkfvOADyCOBXh11Ky8qi_Mmo-kHzIQPofRP57xv2-cdVoRFw1sJzlrUh53Wq9ZJ7RMJo629hnY7t5oUzjHRdmdhZWBPFgGpLcllEcGgYA6BIzuZw8by1Fs7bOq2wg2';
+
+    $token = 'sl.BQp5jJC5ktFOTuAnC16QgnUfOiqOJdshh9NG0vEf7qbsebUBJr-1wtaZhW2wZxogWRCwVzdgU5_c3cYlgZDJLFrHsHvGL851Fkr-ml6Jj1HCifyHjZIoCS4t0licQ9j0oCwhaI4iyA4g';
     $cheaders = array('Authorization: Bearer ' . $token,
                   'Content-Type: application/octet-stream',
                   //'Dropbox-API-Arg: {"path":"/getweb/'.$path.'", "mode":"add"}');
