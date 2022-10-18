@@ -257,7 +257,7 @@
                 'title'    => __( 'Logo', 'redux-framework-demo' ),
                 'compiler' => 'true',
                 'subtitle' => __( 'Upload your logo here.', 'redux-framework-demo' ),
-                //'default'  => array( 'url' => get_template_directory_uri().'/images/logo.png' ),
+                //'default'  => array( 'url' => plugin_dir_path( MOS_GETWEB_API_FILE ).'/images/logo.png' ),
             ),
             array(
                 'id'       => 'logo-option',
@@ -324,6 +324,18 @@
                 'id'          => 'contact-social',
                 'type'        => 'multi_text',
                 //'type'        => 'kad_icons',
+                'title'       => __( 'Social Media', 'redux-framework-demo' ),             
+            ),
+            array(
+                'id'          => 'contact-social-links',
+                'type'        => 'mos_slides',
+                'show' => array(
+                    'title' => true,
+                    'description' => false,
+                    'link_title' => false,
+                    'link_url' => true,
+                    'target' => false,
+                ),
                 'title'       => __( 'Social Media', 'redux-framework-demo' ),             
             ),
             array(
@@ -444,10 +456,17 @@
                 'id'          => 'sections-footer-career',
                 'type'        => 'text',
                 'title'       => __( 'Careers URL', 'redux-framework-demo' ),
-            ),       
+            ),  
+            array(
+                'id'       => 'sections-footer-copyright-image',
+                'type'     => 'media',
+                'url'      => true,
+                'title'    => __( 'Copyright Image', 'redux-framework-demo' ),
+                'compiler' => 'true',
+            ),     
             array(
                 'id'       => 'sections-footer-copyright',
-                'type'     => 'editor',
+                'type'     => 'textarea',
                 'title'    => __( 'Copyright Content', 'redux-framework-demo' ),
                 'default'  => '',
                 'args'    => array(
@@ -821,7 +840,7 @@
      * Custom function for filtering the sections array. Good for child themes to override or add to the sections.
      * Simply include this function in the child themes functions.php file.
      * NOTE: the defined constants for URLs, and directories will NOT be available at this point in a child theme,
-     * so you must use get_template_directory_uri() if you want to use any of the built in icons
+     * so you must use plugin_dir_path( MOS_GETWEB_API_FILE ) if you want to use any of the built in icons
      * */
     if ( ! function_exists( 'dynamic_section' ) ) {
         function dynamic_section( $sections ) {

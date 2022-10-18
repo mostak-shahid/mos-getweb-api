@@ -28,8 +28,8 @@ function cmb2_render_image_select( $field, $escaped_value, $object_id, $object_t
 	echo $image_select;
 }
 function load_custom_cmb2_script() { 
-	wp_enqueue_style( 'cmb2_imgselect-css', get_template_directory_uri() . '/inc/metabox/custom-cmb2-fields.css' );
-	wp_enqueue_script( 'cmb2_imgselect-js', get_template_directory_uri() . '/inc/metabox/custom-cmb2-fields.js' );
+	wp_enqueue_style( 'cmb2_imgselect-css', plugin_dir_path( MOS_GETWEB_API_FILE ) . '/inc/metabox/custom-cmb2-fields.css' );
+	wp_enqueue_script( 'cmb2_imgselect-js', plugin_dir_path( MOS_GETWEB_API_FILE ) . '/inc/metabox/custom-cmb2-fields.js' );
 } 
 add_action( 'admin_enqueue_scripts', 'load_custom_cmb2_script', 20 );
 /*
@@ -42,17 +42,17 @@ add_action( 'admin_enqueue_scripts', 'load_custom_cmb2_script', 20 );
             'disabled' => array(
                 'title' => 'Full Width', 
                 'alt' => 'Full Width', 
-                'img' => get_template_directory_uri() . '/inc/theme-options/ReduxCore/assets/img/1col.png'
+                'img' => plugin_dir_path( MOS_GETWEB_API_FILE ) . '/inc/theme-options/ReduxCore/assets/img/1col.png'
             ), 
             'sidebar-left' => array(
                 'title' => 'Sidebar Left', 
                 'alt' => 'Sidebar Left', 
-                'img' => get_template_directory_uri() . '/inc/theme-options/ReduxCore/assets/img/2cl.png'
+                'img' => plugin_dir_path( MOS_GETWEB_API_FILE ) . '/inc/theme-options/ReduxCore/assets/img/2cl.png'
             ), 
             'sidebar-right' => array(
                 'title' => 'Sidebar Right', 
                 'alt' => 'Sidebar Right', 
-                'img' => get_template_directory_uri() . '/inc/theme-options/ReduxCore/assets/img/2cr.png'
+                'img' => plugin_dir_path( MOS_GETWEB_API_FILE ) . '/inc/theme-options/ReduxCore/assets/img/2cr.png'
             ), 
         ), 
         'default' => 'sidebar-right', 

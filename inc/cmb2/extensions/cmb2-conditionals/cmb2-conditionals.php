@@ -1,6 +1,8 @@
 <?php
 function cmb2_conditionals_scripts() {
-    wp_enqueue_script( 'cmb2-conditionals', get_template_directory_uri() . '/inc/metabox/extensions/cmb2-conditionals/cmb2-conditionals.js',array( 'jquery', 'cmb2-scripts' ) );
+//    wp_enqueue_script( 'cmb2-conditionals', plugin_dir_path( MOS_GETWEB_API_FILE ) . '/inc/metabox/extensions/cmb2-conditionals/cmb2-conditionals.js',array( 'jquery', 'cmb2-scripts' ) );
+    
+	wp_enqueue_script( 'cmb2-conditionals', plugins_url( '/cmb2-conditionals.js', __FILE__ ), array('jquery', 'cmb2-scripts') );
 }
 add_action( 'admin_enqueue_scripts', 'cmb2_conditionals_scripts' );
 
@@ -71,7 +73,7 @@ if ( ! class_exists( 'CMB2_Conditionals' ) ) {
 
 			wp_enqueue_script(
 				'cmb2-conditionals', 
-				get_template_directory_uri() . '/inc/metabox/extensions/cmb2-conditionals/cmb2-conditionals.js',
+				plugin_dir_path( MOS_GETWEB_API_FILE ) . '/inc/metabox/extensions/cmb2-conditionals/cmb2-conditionals.js',
 				array( 'jquery', 'cmb2-scripts' ),
 				self::VERSION,
 				true

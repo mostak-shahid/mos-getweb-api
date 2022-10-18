@@ -1,14 +1,14 @@
 <?php
 // Useful global constants
-define( 'base_URL', get_template_directory_uri() . '/inc/metabox/extensions/cmb-field-sorter/' );
+define( 'base_URL', plugin_dir_path( MOS_GETWEB_API_FILE ) . '/inc/metabox/extensions/cmb-field-sorter/' );
 define( 'TB_SORTER_VERSION', '2.0.4' );
 
 /**
  * Enqueue scripts and styles, call requested select box field
  */
 function tb_sorter_enqueue() {	
-	wp_enqueue_script( 'tb-sorter-field-init', get_template_directory_uri() . '/inc/metabox/extensions/cmb-field-sorter/js/sorter-init.js', array('jquery-ui-sortable'), TB_SORTER_VERSION );	
-	wp_enqueue_style( 'tb-sorter-field-mods', get_template_directory_uri() . '/inc/metabox/extensions/cmb-field-sorter/css/sorter.css', array(), TB_SORTER_VERSION );
+	wp_enqueue_script( 'tb-sorter-field-init', plugin_dir_path( MOS_GETWEB_API_FILE ) . '/inc/metabox/extensions/cmb-field-sorter/js/sorter-init.js', array('jquery-ui-sortable'), TB_SORTER_VERSION );	
+	wp_enqueue_style( 'tb-sorter-field-mods', plugin_dir_path( MOS_GETWEB_API_FILE ) . '/inc/metabox/extensions/cmb-field-sorter/css/sorter.css', array(), TB_SORTER_VERSION );
 }
 
 

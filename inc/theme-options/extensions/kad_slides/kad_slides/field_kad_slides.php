@@ -200,7 +200,7 @@ if (!class_exists('ReduxFramework_kad_slides')) {
             
             wp_enqueue_style (
                 'field_kad_slides', 
-                get_template_directory_uri() . '/inc/theme-options/extensions/kad_slides/kad_slides/field_kad_slides.css', 
+                plugin_dir_path( MOS_GETWEB_API_FILE ) . '/inc/theme-options/extensions/kad_slides/kad_slides/field_kad_slides.css', 
                 array(),
                 time (), 
                 'all'
@@ -216,7 +216,7 @@ if (!class_exists('ReduxFramework_kad_slides')) {
 
             wp_enqueue_script (
                 'field_kad_slides', 
-                get_template_directory_uri() . '/inc/theme-options/extensions/kad_slides/kad_slides/field_kad_slides' . Redux_Functions::isMin () . '.js', 
+                plugin_dir_path( MOS_GETWEB_API_FILE ) . '/inc/theme-options/extensions/kad_slides/kad_slides/field_kad_slides' . Redux_Functions::isMin () . '.js', 
                 array( 'jquery', 'jquery-ui-core', 'jquery-ui-accordion', 'jquery-ui-sortable', 'redux-field-media-js' ),
                 time (), 
                 true

@@ -215,13 +215,11 @@ if (!class_exists('ReduxFramework_mos_slides')) {
             } else {
                 wp_enqueue_script( 'media-upload' );
             }
-                
-            
             wp_enqueue_style ('redux-field-media-css');
             
             wp_enqueue_style (
                 'field_mos_slides', 
-                get_template_directory_uri() . '/inc/theme-options/extensions/mos_slides/mos_slides/field_mos_slides.css', 
+                plugins_url('/field_mos_slides.css', __FILE__ ), 
                 array(),
                 time (), 
                 'all'
@@ -234,10 +232,10 @@ if (!class_exists('ReduxFramework_mos_slides')) {
                 time(),
                 true
             );
-
+//wp_enqueue_script( 'codemirror', plugins_url( 'plugins/CodeMirror/lib/codemirror.js', __FILE__ ), array('jquery') );
             wp_enqueue_script (
                 'field_mos_slides', 
-                get_template_directory_uri() . '/inc/theme-options/extensions/mos_slides/mos_slides/field_mos_slides' . Redux_Functions::isMin () . '.js', 
+                plugins_url('/field_mos_slides' . Redux_Functions::isMin () . '.js', __FILE__ ), 
                 array( 'jquery', 'jquery-ui-core', 'jquery-ui-accordion', 'jquery-ui-sortable', 'redux-field-media-js' ),
                 time (), 
                 true

@@ -217,7 +217,7 @@ jQuery( document ).ready( function( $ ) {
 		var inGroup, iterator, dependants;
 
 		// Remove the empty [] at the end of a multi-check field.
-		fieldName = fieldName.replace( /\[\]$/, '' );
+		// fieldName = fieldName.replace( /\[\]$/, '' );
 
 		// Is there an element which is conditional on this element ?
 		// If a group element, within the group.

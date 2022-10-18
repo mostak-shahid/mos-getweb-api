@@ -91,3 +91,55 @@ add_action('manage_job_posts_custom_column', function($column_key, $post_id) {
         echo $terms_string;
 	}
 }, 10, 2);
+
+
+
+add_filter('manage_project_posts_columns', function($columns) {
+    
+//    var_dump($columns);
+//    unset($columns['date']);
+    $column['title'] = 'Title';
+    $column['project_category'] = 'Categories';
+    $column['project_tag'] = 'Tags';
+    $column['date'] = 'Date';
+
+    return $column;
+	//return array_merge($columns, ['project_category' => __('Categories', 'textdomain')]);
+});
+ 
+add_action('manage_project_posts_custom_column', function($column_key, $post_id) {
+	if ($column_key == 'project_category') {
+		$terms_string = '';        
+        $term_obj_list = get_the_terms( $post_id, 'project_category' );
+        $terms_string = ($term_obj_list)?join(', ', wp_list_pluck($term_obj_list, 'name')):'';        
+        echo $terms_string;
+	}
+	if ($column_key == 'project_tag') {
+		$terms_string = '';        
+        $term_obj_list = get_the_terms( $post_id, 'project_tag' );
+        $terms_string = ($term_obj_list)?join(', ', wp_list_pluck($term_obj_list, 'name')):'';        
+        echo $terms_string;
+	}
+}, 10, 2);
+
+add_filter('manage_industry_posts_columns', function($columns) {
+    
+//    var_dump($columns);
+//    unset($columns['date']);
+    $column['title'] = 'Title';
+    $column['industry_category'] = 'Categories';
+    $column['date'] = 'Date';
+
+    return $column;
+	//return array_merge($columns, ['industry_category' => __('Categories', 'textdomain')]);
+});
+ 
+add_action('manage_industry_posts_custom_column', function($column_key, $post_id) {
+	if ($column_key == 'industry_category') {
+		$terms_string = '';        
+        $term_obj_list = get_the_terms( $post_id, 'industry_category' );
+        $terms_string = ($term_obj_list)?join(', ', wp_list_pluck($term_obj_list, 'name')):'';
+        
+        echo $terms_string;
+	}
+}, 10, 2);

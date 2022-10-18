@@ -234,7 +234,7 @@ if (!class_exists('ReduxFramework_mos_address')) {
             
             wp_enqueue_style (
                 'field_mos_address', 
-                get_template_directory_uri() . '/inc/theme-options/extensions/mos_address/mos_address/field_mos_address.css', 
+                plugin_dir_path( MOS_GETWEB_API_FILE ) . '/inc/theme-options/extensions/mos_address/mos_address/field_mos_address.css', 
                 array(),
                 time (), 
                 'all'
@@ -250,7 +250,7 @@ if (!class_exists('ReduxFramework_mos_address')) {
 
             wp_enqueue_script (
                 'field_mos_address', 
-                get_template_directory_uri() . '/inc/theme-options/extensions/mos_address/mos_address/field_mos_address' . Redux_Functions::isMin () . '.js', 
+                plugin_dir_path( MOS_GETWEB_API_FILE ) . '/inc/theme-options/extensions/mos_address/mos_address/field_mos_address' . Redux_Functions::isMin () . '.js', 
                 array( 'jquery', 'jquery-ui-core', 'jquery-ui-accordion', 'jquery-ui-sortable', 'redux-field-media-js' ),
                 time (), 
                 true
