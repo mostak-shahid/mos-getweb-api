@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 if ( ! defined( 'MOS_GETWEB_API_FILE' ) ) {
 	define( 'MOS_GETWEB_API_FILE', __FILE__ );
 }
-
+require_once ( plugin_dir_path( MOS_GETWEB_API_FILE ) . 'vendor/autoload.php');
 require_once ( plugin_dir_path( MOS_GETWEB_API_FILE ) . 'inc/aq_resizer.php' );
 require_once ( plugin_dir_path( MOS_GETWEB_API_FILE ) . 'inc/cmb2/init.php' );
 require_once ( plugin_dir_path( MOS_GETWEB_API_FILE ) . 'inc/cmb2/extensions/cmb2-conditionals/cmb2-conditionals.php' );
@@ -620,4 +620,25 @@ function mos_custom_css() {
         } 
     </style>
   <?php
+}
+function site_estimated_reading_time( $content = '', $wpm = 250 ) {
+    $clean_content = strip_shortcodes( $content );
+    $clean_content = strip_tags( $clean_content );
+    $word_count = str_word_count( $clean_content );
+    $time = ceil( $word_count / $wpm );
+    return $time;
+}
+
+function generate_table_of_content($content){   
+
+    $markupFixer  = new TOC\MarkupFixer();
+    $tocGenerator = new TOC\TocGenerator();
+
+    // This ensures that all header tags have `id` attributes so they can be used as anchor links
+    $content  = "<div class='content'>" . $markupFixer->fix($content) . "</div>";
+
+    //This generates the Table of Contents in HTML
+    $toc = "<div class='toc'>" . $tocGenerator->getHtmlMenu($content) . "</div>";
+
+    return ['toc' => $toc, 'content' =>$content]; 
 }
